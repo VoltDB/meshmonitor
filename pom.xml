@@ -53,22 +53,6 @@
             <artifactId>prometheus-metrics-exporter-httpserver</artifactId>
             <version>1.0.0</version>
         </dependency>
-
-        <dependency>
-            <groupId>io.kubernetes</groupId>
-            <artifactId>client-java-api</artifactId>
-            <version>19.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.kubernetes</groupId>
-            <artifactId>client-java</artifactId>
-            <version>19.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.kubernetes</groupId>
-            <artifactId>client-java-extended</artifactId>
-            <version>19.0.0</version>
-        </dependency>
     </dependencies>
 
     <build>

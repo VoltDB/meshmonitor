@@ -17,9 +17,6 @@
 package org.voltdb.meshmonitor;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.kubernetes.client.openapi.ApiClient;
-import io.kubernetes.client.openapi.Configuration;
-import io.kubernetes.client.util.Config;
 import picocli.CommandLine;
 
 import java.io.IOException;
@@ -37,9 +34,6 @@ import java.util.concurrent.TimeUnit;
         name = "meshmonitor"
 )
 public class MeshMonitorCommand implements Callable<Integer> {
-
-//    @CommandLine.Option(names = {"-n", "--namespace"}, description = "Kubernetes namespace")
-//    private String namespace;
 
     @CommandLine.Option(
             names = {"-h", "--min-hiccup"},
@@ -87,6 +81,8 @@ public class MeshMonitorCommand implements Callable<Integer> {
     );
 
     public static void main(String[] args) {
+        int exitCode = new CommandLine(new MeshMonitorCommand()).execute(args);
+        System.exit(exitCode);
     }
 
     @Override
