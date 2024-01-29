@@ -42,7 +42,7 @@ public class MeshMonitorCommand implements Callable<Integer> {
     private int minHiccupSizeMilliseconds;
 
     @CommandLine.Option(
-            names = {"-i", "--iterval"},
+            names = {"-i", "--interval"},
             description = "Reporting interval in seconds",
             defaultValue = "10")
     private int reportIntervalSeconds;
