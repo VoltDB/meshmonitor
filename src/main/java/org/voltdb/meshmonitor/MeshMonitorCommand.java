@@ -55,7 +55,7 @@ public class MeshMonitorCommand implements Callable<Integer> {
     private InetSocketAddress bindAddress;
 
     @CommandLine.Option(
-            names = {"-m", "--metrics"},
+            names = {"-m", "--metrics-bind"},
             description = "Bind address of a metrics server port in format ipv4:port",
             defaultValue = "127.0.0.1:12222",
             converter = InetSocketAddressConverter.class)
@@ -68,7 +68,7 @@ public class MeshMonitorCommand implements Callable<Integer> {
     private boolean disableMetrics;
 
     @CommandLine.Parameters(
-            arity = "0..*",
+            arity = "1..*",
             description = "List of servers to ping",
             converter = InetSocketAddressConverter.class
     )
@@ -87,16 +87,19 @@ public class MeshMonitorCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws IOException {
+        System.out.println("Starting meshmonitor. Binding to address " + bindAddress);
         try (ServerSocketChannel ssc = ServerSocketChannel.open()) {
             ssc.socket().bind(bindAddress);
 
             for (InetSocketAddress connectAddress : servers) {
+                System.out.println("Connecting to: " + connectAddress);
                 SocketChannel sc = SocketChannel.open(connectAddress);
                 scheduleNewMonitor(sc, minHiccupSizeMilliseconds, reportIntervalSeconds);
             }
 
             while (ssc.isOpen()) {
                 SocketChannel sc = ssc.accept();
+                System.out.println("Received connection from: " + sc.getRemoteAddress());
                 scheduleNewMonitor(sc, minHiccupSizeMilliseconds, reportIntervalSeconds);
             }
         }
