@@ -18,7 +18,7 @@
         <maven.compiler.testTarget>21</maven.compiler.testTarget>
 
         <imageName>meshmonitor</imageName>
-        <mainClass>org.voltdb.meshmonitor.MeshMonitor</mainClass>
+        <mainClass>org.voltdb.meshmonitor.MeshMonitorCommand</mainClass>
     </properties>
 
     <dependencies>
