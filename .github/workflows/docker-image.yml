@@ -17,8 +17,8 @@ jobs:
       run: |
         mkdir target
         DOCKER_BUILDKIT=1 docker buildx build --output type=tar,dest=./target/docker.image.tar --platform=linux/amd64 -f docker/meshmonitor-native-image.dockerfile .
-    - name: Download a single artifact
-      uses: actions/download-artifact@v4
+    - name: Store an artifact
+      uses: actions/upload-artifact@v4
       with:
         name: meshmonitor
         path: target/meshmonitor
