@@ -16,53 +16,57 @@
  */
 package org.voltdb.meshmonitor;
 
-import org.HdrHistogram.Histogram;
+import java.net.InetSocketAddress;
+
 import org.HdrHistogram.SynchronizedHistogram;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.Date;
+public class PrintingHistogram {
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
-class PrintingHistogram extends SynchronizedHistogram {
-
-    public static final int NUMBER_OF_SIGNIFICANT_VALUE_DIGITS = 3;
-    public static final int HIGHEST_TRACKABLE_VALUE = 24 * 60 * 60 * 1000;
-
+    private final ConsoleLogger logger;
     private final String title;
 
-    public PrintingHistogram(String title) {
-        super(HIGHEST_TRACKABLE_VALUE, NUMBER_OF_SIGNIFICANT_VALUE_DIGITS);
+    private final SynchronizedHistogram histogram;
+    private final SynchronizedHistogram deltaHistogram;
+
+    public PrintingHistogram(ConsoleLogger logger, String title, SynchronizedHistogram histogram) {
+        this.logger = logger;
         this.title = title;
+
+        this.histogram = histogram.copy();
+        this.deltaHistogram = histogram.copy();
     }
 
-    public boolean printResults(PrintStream ps, Socket socket, int minHiccupSize) {
-        if (getMaxValue() > minHiccupSize) {
-            logHistogram(ps, title, socket);
-
-            return true;
-        }
-
-        return false;
+    public boolean hasOutliers(long minHiccupSize) {
+        return deltaHistogram.getMaxValue() > minHiccupSize;
     }
 
-    private void logHistogram(PrintStream ps, String title, Socket socket) {
-        String timeNow = ISO_LOCAL_DATE_TIME.format(LocalDateTime.now());
-        ps.printf("%s %-22s %-33s  %s      - MaxLat: %4d Avg: %6.2f 99th-Pct: %3d %3d %3d %3d \n",
-                timeNow,
-                socket.getLocalSocketAddress(),
-                socket.getRemoteSocketAddress(),
+    public void printResultsAndReset(InetSocketAddress remoteId) {
+        logDeltaHistogram(remoteId, title);
+        deltaHistogram.reset();
+    }
+
+    private void logDeltaHistogram(InetSocketAddress remoteId, String title) {
+        logger.log(remoteId,
+                "%-18s - Max: %4.1fms   Mean: %4.1fms   99: %4.1fms  99.9: %4.1fms  99.99: %4.1fms  99.999: %4.1fms",
                 title,
-                getMaxValue(),
-                getMean(),
-                getValueAtPercentile(99.0),
-                getValueAtPercentile(99.9),
-                getValueAtPercentile(99.99),
-                getValueAtPercentile(99.999)
-        );
+                deltaHistogram.getMaxValue() / 1000.0,
+                deltaHistogram.getMean() / 1000.0,
+                deltaHistogram.getValueAtPercentile(99.0) / 1000.0,
+                deltaHistogram.getValueAtPercentile(99.9) / 1000.0,
+                deltaHistogram.getValueAtPercentile(99.99) / 1000.0,
+                deltaHistogram.getValueAtPercentile(99.999) / 1000.0);
+    }
+
+    public void recordValueWithExpectedInterval(long value, long expectedIntervalBetweenValueSamples) {
+        if (value > histogram.getHighestTrackableValue() || value < 0) {
+            logger.log("ERROR: Record for %s histogram exceeds maximum tracked value %d", title, value);
+        } else {
+            histogram.recordValueWithExpectedInterval(value, expectedIntervalBetweenValueSamples);
+            deltaHistogram.recordValueWithExpectedInterval(value, expectedIntervalBetweenValueSamples);
+        }
+    }
+
+    public SynchronizedHistogram getCumulativeHistogram() {
+        return histogram;
     }
 }

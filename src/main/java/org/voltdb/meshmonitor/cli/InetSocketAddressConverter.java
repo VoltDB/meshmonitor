@@ -14,23 +14,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with VoltDB.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.voltdb.meshmonitor;
-
-import picocli.CommandLine;
+package org.voltdb.meshmonitor.cli;
 
 import java.net.InetSocketAddress;
 
+import picocli.CommandLine;
+
 public class InetSocketAddressConverter implements CommandLine.ITypeConverter<InetSocketAddress> {
+
+    private static final int DEFAULT_PORT = 12222;
 
     @Override
     public InetSocketAddress convert(String value) {
+        int port = DEFAULT_PORT;
+
         int pos = value.lastIndexOf(':');
-        if (pos < 0) {
-            throw new CommandLine.TypeConversionException("Invalid format: must be 'host:port' but was '" + value + "'");
+        if (pos > 0) {
+            port = Integer.parseInt(value.substring(pos + 1));
+            return new InetSocketAddress(value.substring(0, pos), port);
         }
 
-        String adr = value.substring(0, pos);
-        int port = Integer.parseInt(value.substring(pos + 1));
-        return new InetSocketAddress(adr, port);
+        return new InetSocketAddress(value, port);
     }
 }
