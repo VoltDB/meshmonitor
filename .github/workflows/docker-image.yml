@@ -1,0 +1,18 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: DOCKER_BUILDKIT=1 docker buildx build --output type=tar,dest=./target/docker.image.tar --platform=linux/amd64 -f docker/meshmonitor-native-image.dockerfile .
