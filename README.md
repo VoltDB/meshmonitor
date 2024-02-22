@@ -76,7 +76,7 @@ Meshmonitor will print histograms of each of the three tracked values. All of th
 the `-p`ing interval in mind (default 5ms) that is included in the measurement values. The values that are printed are
 max, mean, and percentiles: 99th, 99.9th, and 99.99th:
 
-<div class="term-container"><span class="green">09:32:31 [               ]</span> ----------ping-(ms)---------- ---------jitter-(ms)--------- ----timestamp-diff-(ms)------
+<div class="term-container"><span style="color: #b0f986">09:32:31 [               ]</span> ----------ping-(ms)---------- ---------jitter-(ms)--------- ----timestamp-diff-(ms)------
 <span class="green">09:32:31 [               ]</span>   Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99
 <span class="green">09:32:31 [   172.31.5.177]</span>   5.6   5.1   5.1   5.1   5.6|  5.6   2.3   5.3   5.3   5.6|  5.6   5.1   5.1   5.1   5.6
 <span class="green">09:32:31 [   172.31.9.146]</span>   6.0   5.1   5.1   5.1   6.0|  1.0   0.1   0.1   0.1   1.0|  5.1   5.1   5.1   5.1   5.1
