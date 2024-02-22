@@ -10,8 +10,8 @@ FROM --platform=$TARGETPLATFORM gcr.io/distroless/base-debian12
 COPY --from=GRAAL \
     /home/meshmonitor/target/meshmonitor \
     /home/meshmonitor/target/meshmonitor_completion.sh \
+    /home/meshmonitor/target/meshmonitor-1.0.0-jar-with-dependencies.jar \
     /home/meshmonitor/target/generated-docs/meshmonitor.1 \
-    /home/meshmonitor/target/generated-docs/meshmonitor.html \
     /meshmonitor/
 
 CMD ["/meshmonitor/meshmonitor"]

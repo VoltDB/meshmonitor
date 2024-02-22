@@ -23,9 +23,9 @@
 
     <licenses>
         <license>
-            <name>Apache-2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
+            <name>MIT</name>
+            <url>https://opensource.org/blog/license/mit</url>
+            <distribution>manual</distribution>
         </license>
     </licenses>
 
@@ -120,67 +120,6 @@
                 </configuration>
             </plugin>
 
-            <!-- This generates autocompletion script for bash and man pages in html and man format. -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <id>java</id>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>${mainClass}</mainClass>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>generate-autocompletion-script</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <argument>-Dpicocli.autocomplete.systemExitOnError</argument>
-                                <argument>-cp</argument>
-                                <classpath/>
-                                <argument>picocli.AutoComplete</argument>
-                                <argument>--force</argument>
-                                <argument>--completionScript</argument>
-                                <argument>${project.build.directory}/${imageName}_completion.sh</argument>
-                                <argument>${mainClass}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>generateManPages</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <includeProjectDependencies>true</includeProjectDependencies>
-                            <includePluginDependencies>true</includePluginDependencies>
-                            <mainClass>picocli.codegen.docgen.manpage.ManPageGenerator</mainClass>
-                            <arguments>
-                                <argument>--outdir=${project.build.directory}/generated-picocli-docs</argument>
-                                <argument>${mainClass}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>info.picocli</groupId>
-                        <artifactId>picocli-codegen</artifactId>
-                        <version>4.7.5</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
             <!-- Used to configure output jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -255,26 +194,6 @@
             </plugin>
 
             <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <configuration>
-                    <header>etc/license.txt</header>
-                    <strictCheck>true</strictCheck>
-                    <aggregate>true</aggregate>
-                    <excludes>
-                        <exclude>LICENSE.txt</exclude>
-                        <exclude>**/.dontdelete</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.4.1</version>
@@ -319,6 +238,67 @@
 
             <build>
                 <plugins>
+                    <!-- This generates autocompletion script for bash and man pages in html and man format. -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <executions>
+                            <execution>
+                                <id>java</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>${mainClass}</mainClass>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>generate-autocompletion-script</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>java</executable>
+                                    <arguments>
+                                        <argument>-Dpicocli.autocomplete.systemExitOnError</argument>
+                                        <argument>-cp</argument>
+                                        <classpath/>
+                                        <argument>picocli.AutoComplete</argument>
+                                        <argument>--force</argument>
+                                        <argument>--completionScript</argument>
+                                        <argument>${project.build.directory}/${imageName}_completion.sh</argument>
+                                        <argument>${mainClass}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>generateManPages</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <includeProjectDependencies>true</includeProjectDependencies>
+                                    <includePluginDependencies>true</includePluginDependencies>
+                                    <mainClass>picocli.codegen.docgen.manpage.ManPageGenerator</mainClass>
+                                    <arguments>
+                                        <argument>--outdir=${project.build.directory}/generated-picocli-docs</argument>
+                                        <argument>${mainClass}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>info.picocli</groupId>
+                                <artifactId>picocli-codegen</artifactId>
+                                <version>4.7.5</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
