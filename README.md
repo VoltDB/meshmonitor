@@ -57,14 +57,21 @@ All messages printed by Meshmonitor contain event time (`HH:mm:ss`) and an IP ad
 pertains to. If message has no such context then IP column will be empty:
 
 ```console
-[32m09:32:20[39m[0m [32m[               ][39m[0m ----------ping-(ms)---------- ---------jitter-(ms)--------- ----timestamp-diff-(ms)------
-[32m09:32:20[39m[0m [32m[               ][39m[0m [1m[4m  Max[24m[21m[0m [1m[4m Mean[24m[21m[0m [1m[4m   99[24m[21m[0m [1m[4m 99.9[24m[21m[0m [1m[4m99.99[24m[21m[0m|[1m[4m  Max[24m[21m[0m [1m[4m Mean[24m[21m[0m [1m[4m   99[24m[21m[0m [1m[4m 99.9[24m[21m[0m [1m[4m99.99[24m[21m[0m|[1m[4m  Max[24m[21m[0m [1m[4m Mean[24m[21m[0m [1m[4m   99[24m[21m[0m [1m[4m 99.9[24m[21m[0m [1m[4m99.99[24m[21m[0m
-[32m09:32:20[39m[0m [32m[   172.31.10.72][39m[0m   8.8   5.1   5.1   6.9   8.8|  6.4   2.0   4.9   5.1   6.4|  8.8   5.1   5.1   5.3   8.8
-[32m09:32:20[39m[0m [32m[   172.31.5.177][39m[0m   8.8   5.1   5.1   5.5   8.8|  5.5   2.3   5.2   5.3   5.5|  8.8   5.1   5.1   5.3   8.8
-[32m09:32:20[39m[0m [32m[   172.31.9.146][39m[0m   9.0   5.1   5.1   6.0   9.0|  4.4   0.1   0.6   0.9   4.4|  5.2   5.1   5.1   5.1   5.2
-[32m09:32:20[39m[0m [32m[    172.31.14.3][39m[0m   8.6   5.1   5.1   7.9   8.6|  3.0   0.2   0.2   0.4   3.0|  7.0   5.1   5.1   5.3   7.0
+09:08:51 [   172.31.10.72] New remote endpoint - establishing connection
+09:08:51 [   172.31.10.72] Connecting
+09:08:51 [   172.31.10.72] Connected
+09:08:51 [   172.31.10.72] Handshake sent
+09:08:51 [    172.31.14.3] New remote endpoint - establishing connection
+09:08:51 [    172.31.14.3] Connecting
+09:08:51 [    172.31.14.3] Connected
+09:08:51 [    172.31.14.3] Handshake sent
+09:08:51 [   172.31.9.146] Received connection
+09:08:51 [   172.31.9.146] New remote endpoint - establishing connection
+09:08:51 [   172.31.9.146] Connecting
+09:08:51 [   172.31.9.146] Connected
+09:08:51 [   172.31.9.146] Handshake sent
+09:08:52 [    172.31.14.3] Broken pipe
 ```
-
 
 There are 3 kinds of measurements:
 
@@ -76,23 +83,17 @@ Meshmonitor will print histograms of each of the three tracked values. All of th
 the `-p`ing interval in mind (default 5ms) that is included in the measurement values. The values that are printed are
 max, mean, and percentiles: 99th, 99.9th, and 99.99th:
 
-<div class="term-container"><span style="color: red">09:32:31 [               ]</span> ----------ping-(ms)---------- ---------jitter-(ms)--------- ----timestamp-diff-(ms)------
-<span class="green">09:32:31 [               ]</span>   Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99
-<span class="green">09:32:31 [   172.31.5.177]</span>   5.6   5.1   5.1   5.1   5.6|  5.6   2.3   5.3   5.3   5.6|  5.6   5.1   5.1   5.1   5.6
-<span class="green">09:32:31 [   172.31.9.146]</span>   6.0   5.1   5.1   5.1   6.0|  1.0   0.1   0.1   0.1   1.0|  5.1   5.1   5.1   5.1   5.1
-<span class="green">09:32:31 [    172.31.14.3]</span>   6.2   5.1   5.1   5.1   6.2|  0.2   0.2   0.2   0.2   0.2|  5.1   5.1   5.1   5.1   5.1
-<span class="green">09:32:31 [   172.31.4.149]</span>   5.3   5.1   5.1   5.1   5.3|  5.1   1.4   4.9   5.1   5.1|  5.8   5.1   5.1   5.1   5.8
-</div>
+```console
+09:14:11 [               ] --------receive-(ms)--------- ---------delta-(ms)---------- ---------send-(ms)-----------
+09:14:11 [               ]   Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99
+09:14:11 [   172.31.10.72]   5.2   5.1   5.1   5.2   5.2|  0.2   0.0   0.0   0.1   0.2|  5.1   5.1   5.1   5.1   5.1
+09:14:11 [    172.31.14.3]   5.3   5.1   5.1   5.1   5.3|  0.4   0.2   0.2   0.2   0.4|  5.8   5.1   5.1   5.5   5.8
+09:14:11 [   172.31.9.146]   5.1   5.1   5.1   5.1   5.1|  5.1   2.6   5.0   5.1   5.1|  5.1   5.1   5.1   5.1   5.1
+09:14:11 [   172.31.5.177]   5.1   5.1   5.1   5.1   5.1|  5.2   2.8   5.2   5.2   5.2|  5.1   5.1   5.1   5.1   5.1
+```
 
 Measurements exceeding `--threshold` (default 20ms) will be printed in yellow. These that exceed 1s will be printed in
-red:
-
-<div class="term-container"><span class="green">07:53:32 [               ]</span> --------receive-(ms)--------- ---------delta-(ms)---------- ---------send-(ms)-----------
-<span class="green">07:53:32 [               ]</span>   Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99
-<span class="green">07:53:32 [   172.31.4.149]</span>   6.3   1.9   5.1   5.4   6.3| <span class="red">6.8s  2.3s  6.1s  6.5s  6.7s</span>|  9.3   5.1   5.1   9.3   9.3
-<span class="green">07:53:32 [    172.31.14.3]</span>   6.4   2.2   5.1   5.5   6.4| <span class="red">5.5s  1.8s  4.9s  5.3s  5.4s</span>|  7.9   5.1   5.1   7.9   7.9
-<span class="green">07:53:32 [   172.31.9.146]</span>   7.1   3.3   5.1   6.6   7.1| <span class="red">2.2s</span> <span class="yellow">718.8</span>  <span class="red">1.9s  2.1s  2.1s</span>|  7.0   5.1   5.1   7.0   7.0
-</div>
+red.
 
 # Interpreting Results
 
@@ -108,10 +109,16 @@ compiled to the native executable
 using [GraalVM Community Edition](https://github.com/graalvm/graalvm-ce-builds/releases/). It has no additional
 dependencies and can be run as is.
 
-Pure Java version in jar form (meshmonitor.jar) is also available and it will work on any platform with installed Java
+Pure Java version in jar form (meshmonitor.jar) is also available, and it will work on any platform with installed Java
 21 or later (but was only tested on Linux).
 
-# Starting Meshmonitor
+# Using Meshmonitor
+
+Meshmonitor strives to adhere to the industry standard [guidelines](https://clig.dev/#guidelines) on CLI design. It's
+various options can be printed using `-h` parameter. This section describes basic usage and how the mesh is formed.
+
+The central part to operation of this tool is the concept of mesh - set of connections between nodes such that each node
+is connected to all others forming a https://en.wikipedia.org/wiki/Complete_graph.
 
 ```
 Usage: ./meshmonitorhelper.sh NODESFILE <HICCUPSIZE> <LOGINTERVAL> <NETWORKPORT>
@@ -150,11 +157,14 @@ nohup java -jar meshmonitor.jar 20 10 client1:12222 prod2:12222 prod1:12222 > cl
 
 # Openmetrics / Prometheus
 
-Meshmonitor supp
+Meshmonitor starts a simple web server on port 12223 that exposes Prometheus compatible metrics under /metrics endpoint.
+It can be further configured to bind to non default network interface using `-m` option.
+
+This functionality can be disabled using `-d` option.
 
 # Datadog monitoring
 
-To use locally running Datadog agent to scrape meshmonitor metrics create or
+To use a locally running Datadog agent to scrape meshmonitor metrics create or
 edit `/etc/datadog-agent/conf.d/openmetrics.d/conf.yaml` with following contents:
 
 ```yaml
