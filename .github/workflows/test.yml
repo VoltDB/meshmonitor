@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "never" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "never" ]
 
 jobs:
 
@@ -32,3 +32,5 @@ jobs:
           target/meshmonitor.html
           target/meshmonitor.jar
           target/meshmonitor_completion.sh
+    - name: GH Release
+      uses: softprops/action-gh-release@v0.1.15
