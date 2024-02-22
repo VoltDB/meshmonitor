@@ -124,7 +124,7 @@ is connected to all others forming a [complete graph](https://en.wikipedia.org/w
 
  ┌───(A)───┐
  │    │    │
-(B)───┼────(D)
+(B)───┼───(D)
  │    │    │
  └───(C)───┘
 ```
