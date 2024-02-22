@@ -118,50 +118,41 @@ Meshmonitor strives to adhere to the industry standard [guidelines](https://clig
 various options can be printed using `-h` parameter. This section describes basic usage and how the mesh is formed.
 
 The central part to operation of this tool is the concept of mesh - set of connections between nodes such that each node
-is connected to all others forming a [complete graph](https://en.wikipedia.org/wiki/Complete_graph).
+is connected to all others forming a [complete graph](https://en.wikipedia.org/wiki/Complete_graph):
 
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+```text
+
+ ┌───(A)───┐
+ │    │    │
+(B)───┼────(D)
+ │    │    │
+ └───(C)───┘
 ```
 
+Meshmonitor processes include the list of all known nodes in th emesh in the "ping" message. Through this mechanism
+each node learns about all other nodes and a stable mesh is achieved after few iterations of message exchange. The only
+requirement is that each new meshmonitor needs to connect to at leas one other that is already connected to the mesh.
+
+This is simple concept in reality and can be fulfilled by starting all meshmonitor processes and passing one IP address
+of one of the participating meshmonitor processes. Example:
+
+```shell
+# On server 192.161.0.2 start meshmonitor and ask it to join 192.161.0.1
+$ ./meshmonitor 192.161.0.1
+
+# On server 192.161.0.3 start meshmonitor and ask it to join 192.161.0.1
+$ ./meshmonitor 192.161.0.1
+
+# On server 192.161.0.1 start meshmonitor without arguments or with same 192.161.0.1 argument if that's
+# easier to script - it will be ignored
+$ ./meshmonitor 192.161.0.1
 ```
-Usage: ./meshmonitorhelper.sh NODESFILE <HICCUPSIZE> <LOGINTERVAL> <NETWORKPORT>
-   NODESFILE - required parameter         - file with list of nodes on each line
-   <HICCUPSIZE>  - optional               - mininum latency in milliseconds to report, default value = 20
-   <LOGINTERVAL> - optional               - interval of logging in seconds, default value = 10
-   <NETWORKPORT> - optional               - network port used, default value = 12222
 
-```
+The meshmonitor processes can be killed and restarted and the mesh will heal. If a node goes down it is forgotten and
+does not have to ever be restarted - the mesh keeps working. Adding new node can be done at any point in time by
+pointing new meshmonitor process at on of the exiting nodes.
 
-Most customers run with the default HICCUPSIZE and LOGINTERVAL.
-
-Sample output for a nodes.txt that lists 3 nodes:  
-prod1  
-prod2  
-client1
-
-```
-> ./meshmonitorhelper.sh nodes.txt
-Using list of hosts file: nodes.txt
-Using default minimum hiccup size: 20
-Using default logging interval in seconds: 10
-Using default network port: 12222
-
-Generating the commands needed to run on all other nodes:
-
-#prod1: In <VOLTDB_HOME>/tools/meshmonitor directory, run the following command:
-nohup java -jar meshmonitor.jar 20 10 prod1:12222 > prod1-mesh.log &
-
-#prod2: In <VOLTDB_HOME>/tools/meshmonitor directory, run the following command:
-nohup java -jar meshmonitor.jar 20 10 prod2:12222 prod1:12222 > prod2-mesh.log &
-
-#client1: In <VOLTDB_HOME>/tools/meshmonitor directory, run the following command:
-nohup java -jar meshmonitor.jar 20 10 client1:12222 prod2:12222 prod1:12222 > client1-mesh.log &
-```
+NOTE: The IP passed to Meshmonitor at startup is treated differently - meshmonitor will always try to reconnect to it.
 
 # Openmetrics / Prometheus
 
