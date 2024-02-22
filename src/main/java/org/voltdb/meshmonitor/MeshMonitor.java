@@ -49,7 +49,7 @@ public class MeshMonitor {
         this.minHiccupSizeMicroseconds = TimeUnit.MILLISECONDS.toMicros(minHiccupSizeMilliseconds);
     }
 
-    public int start() {
+    public int start(boolean printStatistics) {
         consoleLogger.log("Starting meshmonitor. Binding to address " + bindAddress);
         ServerSocketChannel serverSocketChannel;
 
@@ -65,7 +65,9 @@ public class MeshMonitor {
             connectToWithReconnection(connectAddress);
         }
 
-        scheduleStatisticsPrinting();
+        if (printStatistics) {
+            scheduleStatisticsPrinting();
+        }
 
         try {
             while (serverSocketChannel.isOpen()) {
@@ -83,10 +85,11 @@ public class MeshMonitor {
     private void scheduleStatisticsPrinting() {
         SCHEDULER.scheduleAtFixedRate(() -> {
             try {
-                HistogramLogger printer = new HistogramLogger(consoleLogger);
                 List<Monitor> monitors = serverManager.getMonitors();
-
                 consoleLogger.log("Connected to %d servers", monitors.size());
+
+                HistogramLogger printer = new HistogramLogger(consoleLogger);
+                printer.printHeader();
                 monitors.forEach(monitor -> printer.printResults(monitor, minHiccupSizeMicroseconds));
             } catch (Exception e) {
                 consoleLogger.log("Internal error. %s", e.getMessage());

@@ -3,9 +3,9 @@ package org.voltdb.meshmonitor;
 import org.HdrHistogram.SynchronizedHistogram;
 
 public record MeshMonitorTimings(
-        PrintingHistogram receiveHistogram,
-        PrintingHistogram sendHistogram,
-        PrintingHistogram deltaHistogram) {
+        HistogramWithDelta receiveHistogram,
+        HistogramWithDelta sendHistogram,
+        HistogramWithDelta deltaHistogram) {
 
     public static final int NUMBER_OF_SIGNIFICANT_VALUE_DIGITS = 3;
     public static final long HIGHEST_TRACKABLE_VALUE = 24 * 60 * 60 * 1000 * 1000L;
@@ -23,21 +23,15 @@ public record MeshMonitorTimings(
         sendHistogram.recordValueWithExpectedInterval(observedInterval, expectedInterval);
     }
 
-    public boolean hasOutliers(long minHiccupSize) {
-        return receiveHistogram.hasOutliers(minHiccupSize) ||
-               deltaHistogram.hasOutliers(minHiccupSize) ||
-               sendHistogram.hasOutliers(minHiccupSize);
-    }
-
     private static SynchronizedHistogram defaultHistogram() {
         return new SynchronizedHistogram(HIGHEST_TRACKABLE_VALUE, NUMBER_OF_SIGNIFICANT_VALUE_DIGITS);
     }
 
     public static MeshMonitorTimings createDefault(ConsoleLogger logger) {
         return new MeshMonitorTimings(
-                new PrintingHistogram(logger, "receive", defaultHistogram()),
-                new PrintingHistogram(logger, "send", defaultHistogram()),
-                new PrintingHistogram(logger, "delta", defaultHistogram())
+                new HistogramWithDelta(logger, "receive", defaultHistogram()),
+                new HistogramWithDelta(logger, "send", defaultHistogram()),
+                new HistogramWithDelta(logger, "delta", defaultHistogram())
         );
     }
 }
