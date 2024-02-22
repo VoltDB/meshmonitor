@@ -1,0 +1,5 @@
+ SPDX-License-Identifier: MIT
+
+ Copyright The original authors
+
+ Licensed under the MIT License, available at https://opensource.org/blog/license/mit

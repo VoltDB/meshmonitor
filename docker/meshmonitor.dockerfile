@@ -1,6 +1,3 @@
-# This file is part of VoltDB.
-# Copyright (C) 2023 Volt Active Data Inc.
-
 # syntax=docker/dockerfile:1
 FROM --platform=$TARGETPLATFORM ghcr.io/graalvm/graalvm-community:21.0.1-ol9-20231024 AS GRAAL
 COPY ../meshmonitor /home/meshmonitor

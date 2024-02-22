@@ -9,10 +9,26 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: DOCKER_BUILDKIT=1 docker buildx build --output type=tar,dest=./target/docker.image.tar --platform=linux/amd64 -f docker/meshmonitor-native-image.dockerfile .
+      run: |
+        mkdir target
+        DOCKER_BUILDKIT=1 docker buildx build --output type=tar,dest=./target/docker.image.tar --platform=linux/amd64 -f docker/meshmonitor-native-image.dockerfile .
+        cd target
+        tar -xf docker.image.tar meshmonitor/meshmonitor
+        tar -xf docker.image.tar meshmonitor/meshmonitor.1
+        tar -xf docker.image.tar meshmonitor/meshmonitor.html
+        tar -xf docker.image.tar meshmonitor/meshmonitor_completion.sh
+    - name: Store an artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: meshmonitor
+        path: |
+          target/meshmonitor
+          target/meshmonitor.1
+          target/meshmonitor.html
+          target/meshmonitor.jar
+          target/meshmonitor_completion.sh
