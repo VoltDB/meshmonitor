@@ -66,9 +66,9 @@ public class HistogramLogger {
         String p9999 = CommandLine.Help.Ansi.ON.string("@|bold,underline 99.99|@");
         String singleHistogramHeader = max + " " + mean + " " + p99 + " " + p999 + " " + p9999;
 
-        String receive = "--------receive-(ms)---------";
-        String delta = "---------delta-(ms)----------";
-        String send = "---------send-(ms)-----------";
+        String receive = "----------ping-(ms)----------";
+        String delta = "---------jitter-(ms)---------";
+        String send = "----timestamp-diff-(ms)------";
 
         consoleLogger.log(receive + " " + delta + " " + send);
         consoleLogger.log(singleHistogramHeader + "|" + singleHistogramHeader + "|" + singleHistogramHeader);
