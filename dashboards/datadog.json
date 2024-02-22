@@ -1,0 +1,424 @@
+{
+  "title": "Meshmonitor",
+  "description": "Dashboards for metrics captured from the https://github.com/VoltDB/meshmonitor tool",
+  "widgets": [
+    {
+      "id": 3196381106031784,
+      "definition": {
+        "title": "Worst ping time across cluster",
+        "title_size": "16",
+        "title_align": "left",
+        "type": "query_value",
+        "requests": [
+          {
+            "response_format": "scalar",
+            "queries": [
+              {
+                "name": "query1",
+                "data_source": "metrics",
+                "query": "max:meshmonitor.meshmonitor_receive_seconds{*}",
+                "aggregator": "avg"
+              }
+            ],
+            "conditional_formats": [
+              {
+                "comparator": ">",
+                "value": 0.25,
+                "palette": "white_on_red"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "query1"
+              }
+            ]
+          }
+        ],
+        "autoscale": false,
+        "custom_unit": "s",
+        "precision": 3,
+        "timeseries_background": {
+          "yaxis": {
+            "include_zero": false
+          },
+          "type": "area"
+        }
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 4,
+        "height": 2
+      }
+    },
+    {
+      "id": 8465076518734530,
+      "definition": {
+        "title": "Worst time delta across cluster",
+        "title_size": "16",
+        "title_align": "left",
+        "type": "query_value",
+        "requests": [
+          {
+            "response_format": "scalar",
+            "queries": [
+              {
+                "name": "query1",
+                "data_source": "metrics",
+                "query": "max:meshmonitor.meshmonitor_delta_seconds{*}",
+                "aggregator": "max"
+              }
+            ],
+            "conditional_formats": [
+              {
+                "comparator": ">",
+                "value": 0.25,
+                "palette": "white_on_red"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "query1"
+              }
+            ]
+          }
+        ],
+        "autoscale": false,
+        "custom_unit": "s",
+        "precision": 3,
+        "timeseries_background": {
+          "yaxis": {},
+          "type": "bars"
+        }
+      },
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "width": 4,
+        "height": 2
+      }
+    },
+    {
+      "id": 3012982765165988,
+      "definition": {
+        "title": "Worst thread wakeup jitter across cluster",
+        "title_size": "16",
+        "title_align": "left",
+        "type": "query_value",
+        "requests": [
+          {
+            "response_format": "scalar",
+            "queries": [
+              {
+                "name": "query1",
+                "data_source": "metrics",
+                "query": "max:meshmonitor.meshmonitor_send_seconds{*}",
+                "aggregator": "max"
+              }
+            ],
+            "conditional_formats": [
+              {
+                "comparator": ">",
+                "value": 0.05,
+                "palette": "white_on_red"
+              }
+            ],
+            "formulas": [
+              {
+                "formula": "query1"
+              }
+            ]
+          }
+        ],
+        "autoscale": false,
+        "custom_unit": "s",
+        "precision": 3,
+        "timeseries_background": {
+          "type": "bars",
+          "yaxis": {}
+        }
+      },
+      "layout": {
+        "x": 8,
+        "y": 0,
+        "width": 4,
+        "height": 2
+      }
+    },
+    {
+      "id": 8870922877733778,
+      "definition": {
+        "title": "99.9pth Time between receives ($source)",
+        "title_size": "16",
+        "title_align": "left",
+        "show_legend": true,
+        "legend_layout": "auto",
+        "legend_columns": [
+          "avg",
+          "min",
+          "max",
+          "value",
+          "sum"
+        ],
+        "time": {},
+        "type": "timeseries",
+        "requests": [
+          {
+            "formulas": [
+              {
+                "number_format": {
+                  "unit": {
+                    "type": "canonical_unit",
+                    "unit_name": "second"
+                  }
+                },
+                "formula": "query1"
+              }
+            ],
+            "queries": [
+              {
+                "name": "query1",
+                "data_source": "metrics",
+                "query": "p99.9:meshmonitor.meshmonitor_receive_seconds{$source}"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "palette": "dog_classic",
+              "line_type": "solid",
+              "line_width": "normal"
+            },
+            "display_type": "line"
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 2,
+        "width": 6,
+        "height": 3
+      }
+    },
+    {
+      "id": 5733411986326228,
+      "definition": {
+        "title": "99.9pth Time difference between servers + network trip ($source)",
+        "title_size": "16",
+        "title_align": "left",
+        "show_legend": true,
+        "legend_layout": "auto",
+        "legend_columns": [
+          "avg",
+          "min",
+          "max",
+          "value",
+          "sum"
+        ],
+        "type": "timeseries",
+        "requests": [
+          {
+            "formulas": [
+              {
+                "number_format": {
+                  "unit": {
+                    "type": "canonical_unit",
+                    "unit_name": "second"
+                  }
+                },
+                "formula": "query1"
+              }
+            ],
+            "queries": [
+              {
+                "name": "query1",
+                "data_source": "metrics",
+                "query": "p99.9:meshmonitor.meshmonitor_delta_seconds{$source}"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "palette": "dog_classic",
+              "line_type": "solid",
+              "line_width": "normal"
+            },
+            "display_type": "line"
+          }
+        ],
+        "markers": [
+          {
+            "value": "y > 0.02",
+            "display_type": "warning dashed"
+          }
+        ]
+      },
+      "layout": {
+        "x": 6,
+        "y": 2,
+        "width": 6,
+        "height": 3
+      }
+    },
+    {
+      "id": 5071779771518754,
+      "definition": {
+        "title": "99.9pth Time between thread wakeup ($source)",
+        "title_size": "16",
+        "title_align": "left",
+        "show_legend": true,
+        "legend_layout": "auto",
+        "legend_columns": [
+          "avg",
+          "min",
+          "max",
+          "value",
+          "sum"
+        ],
+        "time": {},
+        "type": "timeseries",
+        "requests": [
+          {
+            "formulas": [
+              {
+                "number_format": {
+                  "unit": {
+                    "type": "canonical_unit",
+                    "unit_name": "second"
+                  }
+                },
+                "formula": "query1"
+              }
+            ],
+            "queries": [
+              {
+                "name": "query1",
+                "data_source": "metrics",
+                "query": "p99.9:meshmonitor.meshmonitor_send_seconds{$source}"
+              }
+            ],
+            "response_format": "timeseries",
+            "style": {
+              "palette": "dog_classic",
+              "line_type": "solid",
+              "line_width": "normal"
+            },
+            "display_type": "line"
+          }
+        ],
+        "markers": [
+          {
+            "value": "y > 0.006",
+            "display_type": "warning dashed"
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 5,
+        "width": 6,
+        "height": 3
+      }
+    },
+    {
+      "id": 8449565759135622,
+      "definition": {
+        "title": "99.pth Time between received pings ($source, $destination)",
+        "title_size": "16",
+        "title_align": "left",
+        "type": "query_table",
+        "requests": [
+          {
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query1",
+                "query": "p99.9:meshmonitor.meshmonitor_receive_seconds{$source,$destination} by {host_name,remote_host_name}",
+                "aggregator": "percentile"
+              }
+            ],
+            "response_format": "scalar",
+            "formulas": [
+              {
+                "cell_display_mode": "bar",
+                "number_format": {
+                  "unit": {
+                    "type": "canonical_unit",
+                    "unit_name": "second"
+                  }
+                },
+                "formula": "query1",
+                "limit": {
+                  "count": 500,
+                  "order": "desc"
+                }
+              }
+            ]
+          }
+        ],
+        "has_search_bar": "auto"
+      },
+      "layout": {
+        "x": 6,
+        "y": 5,
+        "width": 6,
+        "height": 7
+      }
+    },
+    {
+      "id": 8279914799950950,
+      "definition": {
+        "title": "99.9pth Time between received pings",
+        "type": "treemap",
+        "requests": [
+          {
+            "response_format": "scalar",
+            "queries": [
+              {
+                "data_source": "metrics",
+                "name": "query1",
+                "query": "p99.9:meshmonitor.meshmonitor_receive_seconds{$source, $destination} by {host_name,remote_host_name}",
+                "aggregator": "percentile"
+              }
+            ],
+            "style": {
+              "palette": "datadog16"
+            },
+            "formulas": [
+              {
+                "number_format": {
+                  "unit": {
+                    "type": "canonical_unit",
+                    "unit_name": "second"
+                  }
+                },
+                "formula": "query1"
+              }
+            ]
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 8,
+        "width": 6,
+        "height": 4
+      }
+    }
+  ],
+  "template_variables": [
+    {
+      "name": "source",
+      "prefix": "host_name",
+      "available_values": [],
+      "default": "*"
+    },
+    {
+      "name": "destination",
+      "prefix": "remote_host_name",
+      "available_values": [],
+      "default": "*"
+    }
+  ],
+  "layout_type": "ordered",
+  "notify_list": [],
+  "reflow_type": "fixed"
+}

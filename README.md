@@ -1,7 +1,13 @@
 # Table of Contents
 1. [Overview](#overview)
-2. [What Meshmonitor Can (and Can't) Tell You](README.md#what-meshmonitor-can-and-cant-tell-you)
+2. [What Meshmonitor Can (and Can't) Tell You](#what-meshmonitor-can-and-cant-tell-you)
 3. [What Meshmonitor does](#what-meshmonitor-does)
+4. [Output](#output)
+5. [Interpreting Results](#interpreting-results)
+6. [Obtaining Meshmonitor](#obtaining-meshmonitor)
+7. [Using Meshmonitor](#using-meshmonitor)
+8. [Openmetrics / Prometheus](#openmetrics--prometheus)
+9. [ODatadog monitoring](#datadog-monitoring)
 
 # Overview
 
