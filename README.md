@@ -56,15 +56,15 @@ and report 3 metrics:
 All messages printed by Meshmonitor contain event time (`HH:mm:ss`) and an IP address of the node that the message
 pertains to. If message has no such context then IP column will be empty:
 
-<div class="term-container"><span class="yellow">09:32:10 [   172.31.10.72]</span> Connecting
-<span class="green">09:32:10 [   172.31.10.72]</span> Connected
-<span class="green">09:32:10 [   172.31.10.72]</span> Handshake sent
-<span class="green">09:32:10 [   172.31.5.177]</span> Received connection
-<span class="green">09:32:10 [   172.31.9.146]</span> Received connection
-<span class="green">09:32:10 [    172.31.14.3]</span> Received connection
-<span class="green">09:32:20 [               ]</span> Connected to 4 servers
-<span class="red">09:32:21 [    172.31.14.3]</span> Broken pipe
-</div>
+```console
+[32m09:32:20[39m[0m [32m[               ][39m[0m ----------ping-(ms)---------- ---------jitter-(ms)--------- ----timestamp-diff-(ms)------
+[32m09:32:20[39m[0m [32m[               ][39m[0m [1m[4m  Max[24m[21m[0m [1m[4m Mean[24m[21m[0m [1m[4m   99[24m[21m[0m [1m[4m 99.9[24m[21m[0m [1m[4m99.99[24m[21m[0m|[1m[4m  Max[24m[21m[0m [1m[4m Mean[24m[21m[0m [1m[4m   99[24m[21m[0m [1m[4m 99.9[24m[21m[0m [1m[4m99.99[24m[21m[0m|[1m[4m  Max[24m[21m[0m [1m[4m Mean[24m[21m[0m [1m[4m   99[24m[21m[0m [1m[4m 99.9[24m[21m[0m [1m[4m99.99[24m[21m[0m
+[32m09:32:20[39m[0m [32m[   172.31.10.72][39m[0m   8.8   5.1   5.1   6.9   8.8|  6.4   2.0   4.9   5.1   6.4|  8.8   5.1   5.1   5.3   8.8
+[32m09:32:20[39m[0m [32m[   172.31.5.177][39m[0m   8.8   5.1   5.1   5.5   8.8|  5.5   2.3   5.2   5.3   5.5|  8.8   5.1   5.1   5.3   8.8
+[32m09:32:20[39m[0m [32m[   172.31.9.146][39m[0m   9.0   5.1   5.1   6.0   9.0|  4.4   0.1   0.6   0.9   4.4|  5.2   5.1   5.1   5.1   5.2
+[32m09:32:20[39m[0m [32m[    172.31.14.3][39m[0m   8.6   5.1   5.1   7.9   8.6|  3.0   0.2   0.2   0.4   3.0|  7.0   5.1   5.1   5.3   7.0
+```
+
 
 There are 3 kinds of measurements:
 
@@ -75,8 +75,6 @@ There are 3 kinds of measurements:
 Meshmonitor will print histograms of each of the three tracked values. All of these values need to be interpreted with
 the `-p`ing interval in mind (default 5ms) that is included in the measurement values. The values that are printed are
 max, mean, and percentiles: 99th, 99.9th, and 99.99th:
-
-#### $\textcolor{magenta}{\textsf{Should be magenta}}$ 
 
 <div class="term-container"><span style="color: red">09:32:31 [               ]</span> ----------ping-(ms)---------- ---------jitter-(ms)--------- ----timestamp-diff-(ms)------
 <span class="green">09:32:31 [               ]</span>   Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99
@@ -156,19 +154,16 @@ Meshmonitor supp
 
 # Datadog monitoring
 
-Data
-<style>.term-container {
-background: #171717;
-border-radius: 5px;
-color: white;
-font-family: "SFMono-Regular", Monaco, Menlo, Consolas, "Liberation Mono", Courier, monospace;
-font-size: 12px;
-padding: 14px 18px;
-white-space: pre-wrap;
-}
+To use locally running Datadog agent to scrape meshmonitor metrics create or
+edit `/etc/datadog-agent/conf.d/openmetrics.d/conf.yaml` with following contents:
 
-.red { color: #ff7070; } /* red */
-.green { color: #b0f986; } /* green */
-.yellow { color: #c6c502; } /* yellow */
+```yaml
+init_config:
+  service: 'meshmonitor'
 
-</style>
+instances:
+  - openmetrics_endpoint: 'http://localhost:12223/metrics'
+    namespace: 'meshmonitor'
+    metrics: [ ".*" ]
+    histogram_buckets_as_distributions: true
+```
