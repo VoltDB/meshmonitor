@@ -1,13 +1,13 @@
 # Table of Contents
 1. [Overview](#overview)
-2. [What Meshmonitor Can (and Can't) Tell You](#what-meshmonitor-can-and-cant-tell-you)
-3. [What Meshmonitor does](#what-meshmonitor-does)
-4. [Output](#output)
-5. [Interpreting Results](#interpreting-results)
-6. [Obtaining Meshmonitor](#obtaining-meshmonitor)
-7. [Using Meshmonitor](#using-meshmonitor)
-8. [Openmetrics / Prometheus](#openmetrics--prometheus)
-9. [ODatadog monitoring](#datadog-monitoring)
+   1. [What Meshmonitor Can (and Can't) Tell You](#what-meshmonitor-can-and-cant-tell-you)
+1. [What Meshmonitor does](#what-meshmonitor-does)
+   1. [Output](#output)
+   1. [Interpreting Results](#interpreting-results)
+1. [Obtaining Meshmonitor](#obtaining-meshmonitor)
+1. [Using Meshmonitor](#using-meshmonitor)
+   1. [Openmetrics / Prometheus](#openmetrics--prometheus)
+   1. [Datadog monitoring](#datadog-monitoring)
 
 # Overview
 
@@ -20,7 +20,7 @@ diagnose situations when sites are experiencing dead host timeouts without any o
 Meshmonitor can be run alongside VoltDB. It has very low overhead on the CPUs and network. It can also be helpful to run
 without VoltDB - as a proof point that your environment is going to have adequate baseline stability for running VoltDB.
 
-# What Meshmonitor Can (and Can't) Tell You
+## What Meshmonitor Can (and Can't) Tell You
 
 First - an analogy. Think of VoltDB as a fast car. Like all cars, the quality of the streets impacts the top speed at
 which you can travel. If the streets you drive on are poorly paved, have random lane closings, or a lot of traffic
@@ -62,7 +62,7 @@ and report 3 metrics:
 3. **Timestamp differences**.The *receive* thread also measures the difference in time between the timestamp encoded in
    the heartbeat by *send* thread and when the heartbeat was processed by *receive* thread.
 
-# Output
+## Output
 
 All messages printed by Meshmonitor contain event time (`HH:mm:ss`) and an IP address of the node that the message
 pertains to. If message has no such context then IP column will be empty:
@@ -106,7 +106,7 @@ max, mean, and percentiles: 99th, 99.9th, and 99.99th:
 Measurements exceeding `--threshold` (default 20ms) will be printed in yellow. These that exceed 1s will be printed in
 red.
 
-# Interpreting Results
+## Interpreting Results
 
 Log files from all the nodes should be compared in order to establish where the problem lies. There can be delays in
 many parts of the system. By comparing log files from different nodes you can often match deltas in send times on one
@@ -165,14 +165,14 @@ pointing new meshmonitor process at on of the exiting nodes.
 
 NOTE: The IP passed to Meshmonitor at startup is treated differently - meshmonitor will always try to reconnect to it.
 
-# Openmetrics / Prometheus
+## Openmetrics / Prometheus
 
 Meshmonitor starts a simple web server on port 12223 that exposes Prometheus compatible metrics under /metrics endpoint.
 It can be further configured to bind to non default network interface using `-m` option.
 
 This functionality can be disabled using `-d` option.
 
-# Datadog monitoring
+## Datadog monitoring
 
 To use a locally running Datadog agent to scrape meshmonitor metrics create or
 edit `/etc/datadog-agent/conf.d/openmetrics.d/conf.yaml` with following contents:
