@@ -91,7 +91,10 @@ public class MeshMonitorCommand implements Callable<Integer> {
             defaultValue = "false")
     private boolean enableDebugLogging;
 
-    @CommandLine.Parameters(arity = "0..*", description = "List of servers to ping", converter = InetSocketAddressConverter.class)
+    @CommandLine.Parameters(
+            arity = "0..*",
+            description = "List of servers to maintain permanent connection to",
+            converter = InetSocketAddressConverter.class)
     private List<InetSocketAddress> servers = new ArrayList<>();
 
     @CommandLine.Spec
