@@ -118,7 +118,15 @@ Meshmonitor strives to adhere to the industry standard [guidelines](https://clig
 various options can be printed using `-h` parameter. This section describes basic usage and how the mesh is formed.
 
 The central part to operation of this tool is the concept of mesh - set of connections between nodes such that each node
-is connected to all others forming a https://en.wikipedia.org/wiki/Complete_graph.
+is connected to all others forming a [complete graph](https://en.wikipedia.org/wiki/Complete_graph).
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
 
 ```
 Usage: ./meshmonitorhelper.sh NODESFILE <HICCUPSIZE> <LOGINTERVAL> <NETWORKPORT>
