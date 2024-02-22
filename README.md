@@ -1,3 +1,8 @@
+# Table of Contents
+1. [Overview](#overview)
+2. [What Meshmonitor Can (and Can't) Tell You](README.md#what-meshmonitor-can-and-cant-tell-you)
+3. [What Meshmonitor does](#what-meshmonitor-does)
+
 # Overview
 
 Meshmonitor is a tool for monitoring network issues such as network delays and instability, mysterious timeouts, hangs,
@@ -176,3 +181,6 @@ instances:
     metrics: [ ".*" ]
     histogram_buckets_as_distributions: true
 ```
+
+Just for the Meshmonitor we have created a Datadog dashboard that you can import
+from [json file](dashboards/datadog.json). 
