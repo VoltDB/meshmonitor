@@ -143,8 +143,8 @@ $ ./meshmonitor 192.161.0.1
 # On server 192.161.0.3 start meshmonitor and ask it to join 192.161.0.1
 $ ./meshmonitor 192.161.0.1
 
-# On server 192.161.0.1 start meshmonitor without arguments or with same 192.161.0.1 argument if that's
-# easier to script - it will be ignored
+# On server 192.161.0.1 start meshmonitor without arguments or with the 
+# same 192.161.0.1 argument if that's easier to script - it will be ignored
 $ ./meshmonitor 192.161.0.1
 ```
 
