@@ -14,7 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@CommandLine.Command(name = "meshmonitor", description = "Tool for monitoring network issues such as network delays and instability, mysterious timeouts, hangs, and scheduling problems that delay message passing. A common use for this tool is when sites are experiencing dead host timeouts without any obvious network event.")
+@CommandLine.Command(
+        name = "meshmonitor",
+        sortOptions = false,
+        headerHeading = "Usage:%n%n",
+        synopsisHeading = "%n",
+        descriptionHeading = "%nDescription:%n%n",
+        parameterListHeading = "%nParameters:%n",
+        optionListHeading = "%nOptions:%n",
+        header = "Detects network jitter and reports on it.",
+        description = "Tool for monitoring network issues such as network delays " +
+                      "and instability, mysterious timeouts, hangs, and scheduling " +
+                      "problems that delay message passing. A common use for this tool " +
+                      "is when sites are experiencing dead host timeouts without any " +
+                      "obvious network event.")
 public class MeshMonitorCommand implements Callable<Integer> {
 
     @CommandLine.Option(
@@ -78,11 +91,6 @@ public class MeshMonitorCommand implements Callable<Integer> {
             defaultValue = "false")
     private boolean enableDebugLogging;
 
-    @CommandLine.Option(
-            names = {"--host-name"},
-            description = "Host name to use when reporting metrics")
-    private String hostName = getLocalHost();
-
     @CommandLine.Parameters(arity = "0..*", description = "List of servers to ping", converter = InetSocketAddressConverter.class)
     private List<InetSocketAddress> servers = new ArrayList<>();
 
@@ -139,7 +147,6 @@ public class MeshMonitorCommand implements Callable<Integer> {
         if (!disableMetrics) {
             SimplePrometheusMetricsServer server = new SimplePrometheusMetricsServer(
                     new ConsoleLogger(enableDebugLogging),
-                    hostName,
                     metricsBindAddress,
                     serverManager);
 
