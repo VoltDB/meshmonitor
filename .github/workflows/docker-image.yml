@@ -22,8 +22,6 @@ jobs:
         tar -xf docker.image.tar meshmonitor/meshmonitor.1
         tar -xf docker.image.tar meshmonitor/meshmonitor.html
         tar -xf docker.image.tar meshmonitor/meshmonitor_completion.sh
-        tar -xf docker.image.tar meshmonitor/meshmonitor-1.0.0-jar-with-dependencies.jar
-        mv meshmonitor-1.0.0-jar-with-dependencies.jar meshmonitor.jar
     - name: Store an artifact
       uses: actions/upload-artifact@v4
       with:
