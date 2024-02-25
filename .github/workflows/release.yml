@@ -21,6 +21,7 @@ jobs:
           tar -xf docker.image.tar meshmonitor/meshmonitor.html
           tar -xf docker.image.tar meshmonitor/meshmonitor_completion.sh
           tar -xf docker.image.tar meshmonitor/meshmonitor-1.0.0-jar-with-dependencies.jar
+          mv meshmonitor/meshmonitor-1.0.0-jar-with-dependencies.jar meshmonitor/meshmonitor.jar
       - name: Release
         uses: softprops/action-gh-release@v0.1.15
         with:
