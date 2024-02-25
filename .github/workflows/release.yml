@@ -20,14 +20,13 @@ jobs:
           tar -xf docker.image.tar meshmonitor/meshmonitor.1
           tar -xf docker.image.tar meshmonitor/meshmonitor.html
           tar -xf docker.image.tar meshmonitor/meshmonitor_completion.sh
-          ls -al .
-          ls -al ..
+          ls -al meshmonitor/
       - name: Release
         uses: softprops/action-gh-release@v0.1.15
         with:
           files: |
-            meshmonitor
-            meshmonitor.1
-            meshmonitor.html
-            meshmonitor.jar
-            meshmonitor_completion.sh
+            meshmonitor/meshmonitor
+            meshmonitor/meshmonitor.1
+            meshmonitor/meshmonitor.html
+            meshmonitor/meshmonitor.jar
+            meshmonitor/meshmonitor_completion.sh
