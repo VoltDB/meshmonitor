@@ -216,4 +216,4 @@ instances:
 ```
 
 Just for the Meshmonitor we have created a Datadog dashboard that you can import
-from [json file](dashboards/datadog.json). 
+from [json file](dashboards/datadog.json).
