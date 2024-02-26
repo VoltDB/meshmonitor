@@ -1,13 +1,15 @@
 # Table of Contents
+
 1. [Overview](#overview)
-   1. [What Meshmonitor Can (and Can't) Tell You](#what-meshmonitor-can-and-cant-tell-you)
+    1. [What Meshmonitor Can (and Can't) Tell You](#what-meshmonitor-can-and-cant-tell-you)
 1. [What Meshmonitor does](#what-meshmonitor-does)
-   1. [Output](#output)
-   1. [Interpreting Results](#interpreting-results)
+    1. [Output](#output)
+    1. [Interpreting Results](#interpreting-results)
 1. [Obtaining Meshmonitor](#obtaining-meshmonitor)
 1. [Using Meshmonitor](#using-meshmonitor)
-   1. [Openmetrics / Prometheus](#openmetrics--prometheus)
-   1. [Datadog monitoring](#datadog-monitoring)
+    1. [Openmetrics / Prometheus](#openmetrics--prometheus)
+       1. [List of metrics](#list-of-metrics)
+    1. [Datadog monitoring](#datadog-monitoring)
 
 # Overview
 
@@ -171,6 +173,31 @@ Meshmonitor starts a simple web server on port 12223 that exposes Prometheus com
 It can be further configured to bind to non default network interface using `-m` option.
 
 This functionality can be disabled using `-d` option.
+
+### List of metrics
+
+Each metric contains two basic labels:
+
+- `host_name` - the IP address of the host meshmonitor is running on. This is the address passed to the `--bind`
+  or `-b` option.
+- `remote_host_name` - the IP address of the host meshmonitor is communicating with. It's defined by address passed to
+  the `--bind` or `-b` option of the meshmonitor process running on the remote end.
+
+Metrics contain three histograms for each host in the mesh and are encoded according
+to [Prometheus format](https://prometheus.io/docs/instrumenting/exposition_formats/). This means that each histogram is
+defined by multiple metrics like `meshmonitor_receive_seconds_sum`, `..._count`, `..._bucket{}`.
+
+Monitoring systems and their frontends like Grafana or Datadog know how to interpret histograms and will typically hide
+individual metrics that define buckets and just expose a general histogram metrics derived from them. These would
+typically look like below:
+
+| Histogram | Metric as seen in Datadog/Grafana | Description                                                                                                                  |
+|-----------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| receive   | `meshmonitor_receive_seconds`     | Time between heartbeats. This is the main metric to look at. It should be close to the heartbeat interval.                   |
+| delta     | `meshmonitor_delta_seconds`       | The difference between the timestamp encoded in the heartbeat and when the heartbeat was received.                           |
+| send      | `meshmonitor_send_seconds`        | Time between *send* thread wakeups which should be close to 5ms. An ability of a thread to get scheduled in a timely manner. |
+
+Histograms contain following buckets: `10µs, 100µs, 500µs, 1ms, 2ms, 3ms, 4ms, 5ms, 6ms, 7ms, 8ms, 9ms, 10ms, 20ms, 30ms, 40ms, 50ms, 100ms, 200ms, 500ms, 1s, 2s, 5s, 10s, Inf+`.
 
 ## Datadog monitoring
 
