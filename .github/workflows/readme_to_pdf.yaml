@@ -10,9 +10,12 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - uses: docker://pandoc/core:3.1
+      - uses: docker://pandoc/latex:2.9
         with:
-          args: >- 
-            --standalone
+          args: >-
             --output=README.pdf
             README.md
+      - uses: actions/upload-artifact@v3
+        with:
+          name: README.pdf
+          path: README.pdf
