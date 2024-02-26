@@ -142,7 +142,7 @@ is connected to all others forming a [complete graph](https://en.wikipedia.org/w
  └───(C)───┘
 ```
 
-Meshmonitor processes include the list of all known nodes in th emesh in the "ping" message. Through this mechanism
+Meshmonitor processes include the list of all known nodes in the mesh in the "ping" message. Through this mechanism
 each node learns about all other nodes and a stable mesh is achieved after few iterations of message exchange. The only
 requirement is that each new meshmonitor needs to connect to at leas one other that is already connected to the mesh.
 
