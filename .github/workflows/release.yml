@@ -14,20 +14,32 @@ jobs:
       - name: Build the Docker image
         run: |
           mkdir target
-          DOCKER_BUILDKIT=1 docker buildx build --output type=tar,dest=./target/docker.image.tar --platform=linux/amd64 -f docker/meshmonitor-native-image.dockerfile .
+          DOCKER_BUILDKIT=1 docker buildx build --output type=tar,dest=./target/docker.image.tar --platform=linux/arm64,linux/amd64 -f docker/meshmonitor-native-image.dockerfile .
           cd target
-          tar -xf docker.image.tar meshmonitor/meshmonitor
-          tar -xf docker.image.tar meshmonitor/meshmonitor.1
-          tar -xf docker.image.tar meshmonitor/meshmonitor.html
-          tar -xf docker.image.tar meshmonitor/meshmonitor_completion.sh
-          tar -xf docker.image.tar meshmonitor/meshmonitor-1.0.0-jar-with-dependencies.jar
-          mv meshmonitor/meshmonitor-1.0.0-jar-with-dependencies.jar meshmonitor/meshmonitor.jar
+          
+          # x64
+          tar -xf docker.image.tar linux_amd64/meshmonitor/meshmonitor
+          tar -xf docker.image.tar linux_amd64/meshmonitor/meshmonitor.1
+          tar -xf docker.image.tar linux_amd64/meshmonitor/meshmonitor.html
+          tar -xf docker.image.tar linux_amd64/meshmonitor/meshmonitor_completion.sh
+          tar -xf docker.image.tar linux_amd64/meshmonitor/meshmonitor-1.0.0-jar-with-dependencies.jar
+          mv linux_amd64/meshmonitor/meshmonitor-1.0.0-jar-with-dependencies.jar linux_amd64/meshmonitor/meshmonitor.jar
+          
+          # arm
+          tar -xf docker.image.tar linux_arm64/meshmonitor/meshmonitor
+          tar -xf docker.image.tar linux_arm64/meshmonitor/meshmonitor.1
+          tar -xf docker.image.tar linux_arm64/meshmonitor/meshmonitor.html
+          tar -xf docker.image.tar linux_arm64/meshmonitor/meshmonitor_completion.sh
+          tar -xf docker.image.tar linux_arm64/meshmonitor/meshmonitor-1.0.0-jar-with-dependencies.jar
+          mv linux_arm64/meshmonitor/meshmonitor-1.0.0-jar-with-dependencies.jar linux_arm64/meshmonitor/meshmonitor.jar      
+
       - name: Release
         uses: softprops/action-gh-release@v0.1.15
         with:
           files: |
-            target/meshmonitor/meshmonitor
-            target/meshmonitor/meshmonitor.1
-            target/meshmonitor/meshmonitor.html
-            target/meshmonitor/meshmonitor.jar
-            target/meshmonitor/meshmonitor_completion.sh
+            target/linux_amd64/meshmonitor/meshmonitor
+            target/linux_arm64/meshmonitor/meshmonitor
+            target/linux_amd64/meshmonitor/meshmonitor.1
+            target/linux_amd64/meshmonitor/meshmonitor.html
+            target/linux_amd64/meshmonitor/meshmonitor.jar
+            target/linux_amd64/meshmonitor/meshmonitor_completion.sh
