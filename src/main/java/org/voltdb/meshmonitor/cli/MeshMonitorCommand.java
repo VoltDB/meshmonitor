@@ -3,6 +3,7 @@ package org.voltdb.meshmonitor.cli;
 import org.voltdb.meshmonitor.ConsoleLogger;
 import org.voltdb.meshmonitor.MeshMonitor;
 import org.voltdb.meshmonitor.ServerManager;
+import org.voltdb.meshmonitor.GitPropertiesVersionProvider;
 import org.voltdb.meshmonitor.metrics.SimplePrometheusMetricsServer;
 import picocli.CommandLine;
 
@@ -22,6 +23,7 @@ import java.util.concurrent.Callable;
         descriptionHeading = "%nDescription:%n%n",
         parameterListHeading = "%nParameters:%n",
         optionListHeading = "%nOptions:%n",
+        versionProvider = GitPropertiesVersionProvider.class,
         header = "Detects network jitter and reports on it.",
         description = "Tool for monitoring network issues such as network delays " +
                       "and instability, mysterious timeouts, hangs, and scheduling " +
@@ -110,14 +112,6 @@ public class MeshMonitorCommand implements Callable<Integer> {
 
     public static void main(String[] args) {
         CommandLine commandLine = new CommandLine(new MeshMonitorCommand());
-        if (commandLine.isUsageHelpRequested()) {
-            commandLine.usage(System.out);
-            return;
-        } else if (commandLine.isVersionHelpRequested()) {
-            commandLine.printVersionHelp(System.out);
-            return;
-        }
-
         int exitCode = commandLine.execute(args);
         System.exit(exitCode);
     }
@@ -128,13 +122,14 @@ public class MeshMonitorCommand implements Callable<Integer> {
 
         System.out.println(
                 CommandLine.Help.Ansi.AUTO.string(
-                        """
+                        STR."""
                                 @|green      __  ___          __                          _ __           \s
                                     /  |/  /__  _____/ /_  ____ ___  ____  ____  (_) /_____  _____
                                    / /|_/ / _ \\/ ___/ __ \\/ __ `__ \\/ __ \\/ __ \\/ / __/ __ \\/ ___/
                                   / /  / /  __(__  ) / / / / / / / / /_/ / / / / / /_/ /_/ / /   \s
                                  /_/  /_/\\___/____/_/ /_/_/ /_/ /_/\\____/_/ /_/_/\\__/\\____/_/ \s
-                                 |@"""));
+                                 |@                            \{GitPropertiesVersionProvider.getSimpleVersion()}
+                                 """));
 
         ConsoleLogger consoleLogger = new ConsoleLogger(enableDebugLogging);
         ServerManager serverManager = new ServerManager(consoleLogger, Duration.ofMillis(pingIntervalMilliseconds));

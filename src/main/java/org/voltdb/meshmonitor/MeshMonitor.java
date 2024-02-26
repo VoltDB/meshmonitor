@@ -88,9 +88,11 @@ public class MeshMonitor {
                 List<Monitor> monitors = serverManager.getMonitors();
                 consoleLogger.log("Connected to %d servers", monitors.size());
 
-                HistogramLogger printer = new HistogramLogger(consoleLogger);
-                printer.printHeader();
-                monitors.forEach(monitor -> printer.printResults(monitor, minHiccupSizeMicroseconds));
+                if (!monitors.isEmpty()) {
+                    HistogramLogger printer = new HistogramLogger(consoleLogger);
+                    printer.printHeader();
+                    monitors.forEach(monitor -> printer.printResults(monitor, minHiccupSizeMicroseconds));
+                }
             } catch (Exception e) {
                 consoleLogger.log("Internal error. %s", e.getMessage());
             }
