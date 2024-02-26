@@ -14,6 +14,8 @@ jobs:
         with:
           args: >-
             --pdf-engine=xelatex
+            -V 'mainfont:Font-Regular.otf'
+            -V 'mainfontoptions:BoldFont=Font-Bold.otf, ItalicFont=Font-Italic.otf, BoldItalicFont=Font-BoldItalic.otf'
             --output=README.pdf
             README.md
       - uses: actions/upload-artifact@v3
