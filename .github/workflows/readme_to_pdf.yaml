@@ -13,6 +13,7 @@ jobs:
       - uses: docker://pandoc/latex:2.9
         with:
           args: >-
+            --pdf-engine=xelatex
             --output=README.pdf
             README.md
       - uses: actions/upload-artifact@v3
