@@ -9,14 +9,17 @@ jobs:
   readme_to_pdf_html:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
-      - uses: docker://pandoc/core
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Convert markdown to asciidoctor
+        uses: docker://pandoc/core
         with:
           args: -f markdown -t asciidoc -i README.md -o README.adoc
 #      - uses: docker://asciidoctor/docker-asciidoctor
 #      - run: asciidoctor-pdf README.adoc
-      - uses: docker://asciidoctor/docker-asciidoctor
-      - run : asciidoctor README.adoc
+      - name: Convert asciidoctor to html
+        uses: docker://asciidoctor/docker-asciidoctor
+        run : asciidoctor README.adoc
       - uses: actions/upload-artifact@v3
         with:
           name: README.pdf
