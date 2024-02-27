@@ -12,18 +12,18 @@ jobs:
       - uses: actions/checkout@v3
       - uses: docker://pandoc/core
         with:
-          args: -f markdown -t asciidoc -i README.md -o target/README.adoc
+          args: -f markdown -t asciidoc -i README.md -o README.adoc
       - uses: docker://asciidoctor/docker-asciidoctor
         with:
           args: |
             asciidoctor-pdf
-            target/README.adoc
+            README.adoc
       - uses: docker://asciidoctor/docker-asciidoctor
         with:
           args: |
             asciidoctor
-            target/README.adoc
+            README.adoc
       - uses: actions/upload-artifact@v3
         with:
-          name: target/README.pdf
-          path: target/README.html
+          name: README.pdf
+          path: README.html
