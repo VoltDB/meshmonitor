@@ -1,3 +1,11 @@
+#
+# Copyright (C) 2024 Volt Active Data Inc.
+#
+# Use of this source code is governed by an MIT
+# license that can be found in the LICENSE file or at
+# https://opensource.org/licenses/MIT.
+#
+
 # syntax=docker/dockerfile:1
 FROM --platform=$TARGETPLATFORM ghcr.io/graalvm/graalvm-community:21.0.1-ol9-20231024 AS GRAAL
 COPY ../meshmonitor /home/meshmonitor
