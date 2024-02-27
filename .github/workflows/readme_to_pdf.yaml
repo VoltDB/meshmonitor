@@ -27,7 +27,9 @@ jobs:
           args: README.adoc
       - uses: actions/upload-artifact@v3
         with:
-          name: README
-          path: |
-            README.pdf
-            README.html
+          name: README.pdf
+          path: README.pdf
+      - uses: actions/upload-artifact@v3
+        with:
+          name: README.html
+          path: README.html
