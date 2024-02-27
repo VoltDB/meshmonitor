@@ -6,19 +6,30 @@ on:
       - 'README.md'
 
 jobs:
-  convert_via_pandoc:
+  readme_to_pdf_html:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
-      - uses: docker://pandoc/latex:2.9
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Convert markdown to asciidoctor
+        uses: docker://pandoc/core
         with:
-          args: >-
-            --pdf-engine=xelatex
-            -V 'mainfont:Font-Regular.otf'
-            -V 'mainfontoptions:BoldFont=Font-Bold.otf, ItalicFont=Font-Italic.otf, BoldItalicFont=Font-BoldItalic.otf'
-            --output=README.pdf
-            README.md
+          args: -f markdown -t asciidoc -i README.md -o README.adoc
+      - name: Convert asciidoctor to pdf
+        uses: docker://asciidoctor/docker-asciidoctor
+        with:
+          entrypoint: asciidoctor-pdf
+          args: README.adoc
+      - name: Convert asciidoctor to html
+        uses: docker://asciidoctor/docker-asciidoctor
+        with:
+          entrypoint: asciidoctor
+          args: README.adoc
       - uses: actions/upload-artifact@v3
         with:
           name: README.pdf
           path: README.pdf
+      - uses: actions/upload-artifact@v3
+        with:
+          name: README.html
+          path: README.html

@@ -10,6 +10,7 @@
     1. [Openmetrics / Prometheus](#openmetrics--prometheus)
        1. [List of metrics](#list-of-metrics)
     1. [Datadog monitoring](#datadog-monitoring)
+    1. [Running from a jar](#running-from-a-jar)
 
 # Overview
 
@@ -97,12 +98,12 @@ the `-p`ing interval in mind (default 5ms) that is included in the measurement v
 max, mean, and percentiles: 99th, 99.9th, and 99.99th:
 
 ```console
-09:14:11 [               ] --------receive-(ms)--------- ---------delta-(ms)---------- ---------send-(ms)-----------
-09:14:11 [               ]   Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99
-09:14:11 [   172.31.10.72]   5.2   5.1   5.1   5.2   5.2|  0.2   0.0   0.0   0.1   0.2|  5.1   5.1   5.1   5.1   5.1
-09:14:11 [    172.31.14.3]   5.3   5.1   5.1   5.1   5.3|  0.4   0.2   0.2   0.2   0.4|  5.8   5.1   5.1   5.5   5.8
-09:14:11 [   172.31.9.146]   5.1   5.1   5.1   5.1   5.1|  5.1   2.6   5.0   5.1   5.1|  5.1   5.1   5.1   5.1   5.1
-09:14:11 [   172.31.5.177]   5.1   5.1   5.1   5.1   5.1|  5.2   2.8   5.2   5.2   5.2|  5.1   5.1   5.1   5.1   5.1
+[               ] --------receive-(ms)--------- ---------delta-(ms)---------- ---------send-(ms)-----------
+[               ]   Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99
+[   172.31.10.72]   5.2   5.1   5.1   5.2   5.2|  0.2   0.0   0.0   0.1   0.2|  5.1   5.1   5.1   5.1   5.1
+[    172.31.14.3]   5.3   5.1   5.1   5.1   5.3|  0.4   0.2   0.2   0.2   0.4|  5.8   5.1   5.1   5.5   5.8
+[   172.31.9.146]   5.1   5.1   5.1   5.1   5.1|  5.1   2.6   5.0   5.1   5.1|  5.1   5.1   5.1   5.1   5.1
+[   172.31.5.177]   5.1   5.1   5.1   5.1   5.1|  5.2   2.8   5.2   5.2   5.2|  5.1   5.1   5.1   5.1   5.1
 ```
 
 Measurements exceeding `--threshold` (default 20ms) will be printed in yellow. These that exceed 1s will be printed in
@@ -217,3 +218,14 @@ instances:
 
 Just for the Meshmonitor we have created a Datadog dashboard that you can import
 from [json file](dashboards/datadog.json).
+
+## Running from a jar
+
+To run meshmonitor from a jar file execute:
+
+```shell
+java -jar meshmonitor.jar <ARGS> 
+```
+
+It requires at least Java 21 to run.
+
