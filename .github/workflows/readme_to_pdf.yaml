@@ -10,15 +10,20 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - uses: docker://pandoc/latex:2.9
+      - uses: docker://pandoc/core
         with:
-          args: >-
-            --pdf-engine=xelatex
-            -V 'mainfont:Font-Regular.otf'
-            -V 'mainfontoptions:BoldFont=Font-Bold.otf, ItalicFont=Font-Italic.otf, BoldItalicFont=Font-BoldItalic.otf'
-            --output=README.pdf
-            README.md
+          args: -f markdown -t asciidoc -i README.md -o target/README.adoc
+      - uses: docker://asciidoctor/docker-asciidoctor
+        with:
+          args: |
+            asciidoctor-pdf
+            target/README.adoc
+      - uses: docker://asciidoctor/docker-asciidoctor
+        with:
+          args: |
+            asciidoctor
+            target/README.adoc
       - uses: actions/upload-artifact@v3
         with:
-          name: README.pdf
-          path: README.pdf
+          name: target/README.pdf
+          path: target/README.html
