@@ -6,15 +6,15 @@ on:
       - 'README.md'
 
 jobs:
-  convert_via_pandoc:
+  readme_to_pdf_html:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - uses: docker://pandoc/core
         with:
           args: -f markdown -t asciidoc -i README.md -o README.adoc
-      - uses: docker://asciidoctor/docker-asciidoctor
-      - run: asciidoctor-pdf README.adoc
+#      - uses: docker://asciidoctor/docker-asciidoctor
+#      - run: asciidoctor-pdf README.adoc
       - uses: docker://asciidoctor/docker-asciidoctor
       - run : asciidoctor README.adoc
       - uses: actions/upload-artifact@v3
