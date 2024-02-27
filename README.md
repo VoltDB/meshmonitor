@@ -228,4 +228,3 @@ java -jar meshmonitor.jar <ARGS>
 ```
 
 It requires at least Java 21 to run.
-
