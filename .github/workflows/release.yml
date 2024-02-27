@@ -34,9 +34,6 @@ jobs:
           # arm
           tar -xf docker.image.tar linux_arm64/meshmonitor/meshmonitor
           tar -czf meshmonitor-linux-arm64.tar.gz --directory=linux_arm64/meshmonitor meshmonitor
-          
-          # convert README.md to pdf
-          pandoc -f markdown README.md -o target/README.pdf
       - name: Release
         uses: softprops/action-gh-release@v0.1.15
         with:
