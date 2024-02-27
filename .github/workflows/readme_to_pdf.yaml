@@ -15,11 +15,13 @@ jobs:
         uses: docker://pandoc/core
         with:
           args: -f markdown -t asciidoc -i README.md -o README.adoc
-#      - uses: docker://asciidoctor/docker-asciidoctor
-#      - run: asciidoctor-pdf README.adoc
+      #      - uses: docker://asciidoctor/docker-asciidoctor
+      #      - run: asciidoctor-pdf README.adoc
       - name: Convert asciidoctor to html
         uses: docker://asciidoctor/docker-asciidoctor
-        run : asciidoctor README.adoc
+        with:
+          entrypoint: asciidoctor
+          args: README.adoc
       - uses: actions/upload-artifact@v3
         with:
           name: README.pdf
