@@ -14,15 +14,9 @@ jobs:
         with:
           args: -f markdown -t asciidoc -i README.md -o README.adoc
       - uses: docker://asciidoctor/docker-asciidoctor
-        with:
-          args: |
-            asciidoctor-pdf
-            README.adoc
+      - run: asciidoctor-pdf README.adoc
       - uses: docker://asciidoctor/docker-asciidoctor
-        with:
-          args: |
-            asciidoctor
-            README.adoc
+      - run : asciidoctor README.adoc
       - uses: actions/upload-artifact@v3
         with:
           name: README.pdf
