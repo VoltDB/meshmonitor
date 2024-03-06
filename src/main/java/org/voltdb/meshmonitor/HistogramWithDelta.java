@@ -41,8 +41,4 @@ public class HistogramWithDelta {
     public SynchronizedHistogram getDeltaHistogram() {
         return deltaHistogram;
     }
-
-    public void resetDeltaHistogram() {
-        deltaHistogram.reset();
-    }
 }
