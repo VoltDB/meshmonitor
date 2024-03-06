@@ -8,8 +8,11 @@
 package org.voltdb.meshmonitor.metrics;
 
 import java.net.InetSocketAddress;
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.HdrHistogram.Histogram;
+import org.HdrHistogram.HistogramIterationValue;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -54,8 +57,8 @@ public class HistogramPrinter {
 
     public void printHistogram(StringBuilder output, Histogram histogram, InetSocketAddress remoteId, String metricName) {
         String remoteHostNameLabel = String.format(
-                "remote_host_name=\"%s\",",
-                remoteId.getAddress().getHostAddress())
+                        "remote_host_name=\"%s\",",
+                        remoteId.getHostName())
                 .replace('.', '_');
 
         output.append("# TYPE meshmonitor_")
@@ -81,8 +84,12 @@ public class HistogramPrinter {
         long value = histogram.getCountBetweenValues(start, end);
         runningCount += value;
 
+        AtomicLong sumOfAllValues = new AtomicLong();
+        Iterator<HistogramIterationValue> iterator = histogram.recordedValues().iterator();
+        iterator.forEachRemaining(v -> sumOfAllValues.set(v.getTotalValueToThisValue()));
+
         printBucket(output, remoteHostNameLabel, metricName, "+Inf", runningCount);
-        printSum(output, remoteHostNameLabel, metricName, histogram.getTotalCount());
+        printSum(output, remoteHostNameLabel, metricName, sumOfAllValues.longValue());
         printCount(output, remoteHostNameLabel, metricName, runningCount);
     }
 
