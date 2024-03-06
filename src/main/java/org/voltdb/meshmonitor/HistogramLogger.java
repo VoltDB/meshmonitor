@@ -48,7 +48,7 @@ public class HistogramLogger {
         String p999 = getFormatWithColours(deltaHistogram.getValueAtPercentile(99.9) / 1000.0, minHiccupSize);
         String p9999 = getFormatWithColours(deltaHistogram.getValueAtPercentile(99.99) / 1000.0, minHiccupSize);
 
-        return max + " " + mean + " " + p99 + " " + p999 + " " + p9999;
+        return STR."\{max} \{mean} \{p99} \{p999} \{p9999}";
     }
 
     private String getFormatWithColours(double value, double minHiccupSize) {
