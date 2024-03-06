@@ -109,14 +109,6 @@ public class MeshMonitorCommand implements Callable<Integer> {
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
 
-    static String getLocalHost() {
-        try {
-            return Inet4Address.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            return "127.0.0.1";
-        }
-    }
-
     public static void main(String[] args) {
         CommandLine commandLine = new CommandLine(new MeshMonitorCommand());
         int exitCode = commandLine.execute(args);
@@ -135,7 +127,7 @@ public class MeshMonitorCommand implements Callable<Integer> {
                                    / /|_/ / _ \\/ ___/ __ \\/ __ `__ \\/ __ \\/ __ \\/ / __/ __ \\/ ___/
                                   / /  / /  __(__  ) / / / / / / / / /_/ / / / / / /_/ /_/ / /   \s
                                  /_/  /_/\\___/____/_/ /_/_/ /_/ /_/\\____/_/ /_/_/\\__/\\____/_/ \s
-                                 |@                            \{GitPropertiesVersionProvider.getSimpleVersion()}
+                                 |@                            \{new GitPropertiesVersionProvider().getSimpleVersion()}
                                  """));
 
         ConsoleLogger consoleLogger = new ConsoleLogger(enableDebugLogging);
