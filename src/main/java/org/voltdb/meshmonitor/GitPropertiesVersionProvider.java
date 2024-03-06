@@ -9,8 +9,10 @@ package org.voltdb.meshmonitor;
 
 import picocli.CommandLine;
 
-import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 public class GitPropertiesVersionProvider implements CommandLine.IVersionProvider {
 
@@ -23,36 +25,50 @@ public class GitPropertiesVersionProvider implements CommandLine.IVersionProvide
     public static final String VERSION_UNKNOWN = "unknown";
     public static final String VERSION_PREFIX = "${COMMAND-FULL-NAME} version ";
 
+    private final Supplier<InputStream> propertiesFileLoader;
+
+    // Visible for testing
+    public GitPropertiesVersionProvider(Supplier<InputStream> propertiesFileLoader) {
+        this.propertiesFileLoader = propertiesFileLoader;
+    }
+
+    public GitPropertiesVersionProvider() {
+        propertiesFileLoader = () ->
+                GitPropertiesVersionProvider.class
+                        .getClassLoader()
+                        .getResourceAsStream(GIT_PROPERTIES_FILENAME);
+    }
+
     public String[] getVersion() {
         String simpleVersion = getSimpleVersion();
         return new String[]{VERSION_PREFIX + simpleVersion};
     }
 
-    public static String getSimpleVersion() {
+    public String getSimpleVersion() {
         try {
             Properties properties = new Properties();
 
-            properties.load(
-                    GitPropertiesVersionProvider.class.getClassLoader().getResourceAsStream(GIT_PROPERTIES_FILENAME)
-            );
+            properties.load(propertiesFileLoader.get());
 
-            Object maybeTags = properties.get(GIT_TAGS_PROPERTY);
-            Object maybeBuildTime = properties.get(GIT_BUILD_TIME_PROPERTY);
-            Object maybeCommitId = properties.get(GIT_COMMIT_ID_PROPERTY);
+            String maybeTags = Objects.toString(properties.get(GIT_TAGS_PROPERTY), "");
+            String maybeBuildTime = Objects.toString(properties.get(GIT_BUILD_TIME_PROPERTY), "");
+            String maybeCommitId = Objects.toString(properties.get(GIT_COMMIT_ID_PROPERTY), "");
 
             StringBuilder version = new StringBuilder();
-            if (maybeTags != null) {
+            if (!maybeTags.isBlank()) {
                 version.append(maybeTags);
-            } else if (maybeCommitId != null) {
+            } else if (!maybeCommitId.isBlank()) {
                 version.append(maybeCommitId);
+            } else {
+                version.append(VERSION_UNKNOWN);
             }
 
-            if (maybeBuildTime != null) {
+            if (!maybeBuildTime.isBlank()) {
                 version.append(" built on ").append(maybeBuildTime);
             }
 
             return version.toString();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return VERSION_UNKNOWN;
         }
     }
