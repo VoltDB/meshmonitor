@@ -147,8 +147,8 @@ Meshmonitor processes include the list of all known nodes in the mesh in the "pi
 each node learns about all other nodes and a stable mesh is achieved after a few iterations of message exchange. The only
 requirement is that each new meshmonitor needs to connect to at least one other that is already connected to the mesh.
 
-This is simple concept in reality and can be fulfilled by starting all meshmonitor processes and passing the IP address
-of one of the participating meshmonitor processes. Example:
+The mesh is easy to create by simply starting all meshmonitor processes and specifying the IP address
+of one of the participating nodes as the first argument. For example:
 
 ```shell
 # On server 192.161.0.2 start meshmonitor and ask it to join 192.161.0.1
@@ -179,9 +179,9 @@ The /metrics endpoint can be disabled using the `-d` option.
 
 Each metric contains two basic labels:
 
-- `host_name` - the IP address of the host meshmonitor is running on. This is the address passed to the `--bind`
+- `host_name` - the IP address of the host that meshmonitor is running on. This is the address passed to the `--bind`
   or `-b` option.
-- `remote_host_name` - the IP address of the host meshmonitor is communicating with. It's defined by the address passed to
+- `remote_host_name` - the IP address of the remote node that meshmonitor is communicating with. It's defined by the address passed to
   the `--bind` or `-b` option of the meshmonitor process running on the remote end.
 
 Metrics contain three histograms for each host in the mesh and are encoded in
@@ -216,12 +216,12 @@ instances:
     histogram_buckets_as_distributions: true
 ```
 
-A Datadog dashboard specific to meshmonitor is available. You you can import it
+A Datadog dashboard specific to meshmonitor is available. You can import it
 from [json file](dashboards/datadog.json).
 
 ## Running From a Jar
 
-Use the following command to run meshmonitor from a jar file:
+Use the following command to run meshmonitor from the jar file:
 
 ```shell
 java -jar meshmonitor.jar <ARGS> 
