@@ -68,7 +68,7 @@ and report 3 metrics:
 ## Output
 
 All messages printed by Meshmonitor contain event time (`HH:mm:ss`) and an IP address of the node that the message
-pertains to. If message has no such context then IP column will be empty:
+pertains to. If a message has no such context then the IP column will be empty:
 
 ```console
 09:08:51 [   172.31.10.72] New remote endpoint - establishing connection
@@ -94,7 +94,7 @@ There are 3 kinds of measurements:
 * timestamp delta - delta between remotely recorded sent timestamp and locally recorded receive time
 
 Meshmonitor will print histograms of each of the three tracked values. All of these values need to be interpreted with
-the `-p`ing interval in mind (default 5ms) that is included in the measurement values. The values that are printed are
+the `--ping` interval in mind (default 5ms) that is included in the measurement values. The values that are printed are
 max, mean, and percentiles: 99th, 99.9th, and 99.99th:
 
 ```console
@@ -106,7 +106,7 @@ max, mean, and percentiles: 99th, 99.9th, and 99.99th:
 [   172.31.5.177]   5.1   5.1   5.1   5.1   5.1|  5.2   2.8   5.2   5.2   5.2|  5.1   5.1   5.1   5.1   5.1
 ```
 
-Measurements exceeding `--threshold` (default 20ms) will be printed in yellow. These that exceed 1s will be printed in
+Measurements exceeding `--threshold` (default 20ms) will be printed in yellow. Those that exceed 1 second will be printed in
 red.
 
 ## Interpreting Results
@@ -118,20 +118,20 @@ Deltas in receive times with no correlated deltas in send times can indicate a b
 
 # Obtaining Meshmonitor
 
-Primary distribution form of Meshmonitor is a compiled binary for Linux (x64). In this form it is a Java application
+Meshmonitor is distributed as a compiled binary for Linux (x64). That is, a Java application
 compiled to the native executable
 using [GraalVM Community Edition](https://github.com/graalvm/graalvm-ce-builds/releases/). It has no additional
 dependencies and can be run as is.
 
-Pure Java version in jar form (meshmonitor.jar) is also available, and it will work on any platform with installed Java
-21 or later (but was only tested on Linux).
+A pure Java version in jar form (meshmonitor.jar) is also available. The Java version should work on 
+any platform with Java 21 or later installed (although it has only been tested on Linux).
 
 # Using Meshmonitor
 
-Meshmonitor strives to adhere to the industry standard [guidelines](https://clig.dev/#guidelines) on CLI design. It's
-various options can be printed using `-h` parameter. This section describes basic usage and how the mesh is formed.
+Meshmonitor strives to adhere to the industry standard [guidelines](https://clig.dev/#guidelines) on CLI design. The command
+options can be printed using the `-h` parameter. This section describes basic usage and how the mesh is formed.
 
-The central part to operation of this tool is the concept of mesh - set of connections between nodes such that each node
+The central focus for this tool is the concept of a mesh: a set of connections between nodes such that each node
 is connected to all others forming a [complete graph](https://en.wikipedia.org/wiki/Complete_graph):
 
 ```text
@@ -144,11 +144,11 @@ is connected to all others forming a [complete graph](https://en.wikipedia.org/w
 ```
 
 Meshmonitor processes include the list of all known nodes in the mesh in the "ping" message. Through this mechanism
-each node learns about all other nodes and a stable mesh is achieved after few iterations of message exchange. The only
-requirement is that each new meshmonitor needs to connect to at leas one other that is already connected to the mesh.
+each node learns about all other nodes and a stable mesh is achieved after a few iterations of message exchange. The only
+requirement is that each new meshmonitor needs to connect to at least one other that is already connected to the mesh.
 
-This is simple concept in reality and can be fulfilled by starting all meshmonitor processes and passing one IP address
-of one of the participating meshmonitor processes. Example:
+The mesh is easy to create by simply starting all meshmonitor processes and specifying the IP address
+of one of the participating nodes as the first argument. For example:
 
 ```shell
 # On server 192.161.0.2 start meshmonitor and ask it to join 192.161.0.1
@@ -163,34 +163,34 @@ $ ./meshmonitor 192.161.0.1
 ```
 
 The meshmonitor processes can be killed and restarted and the mesh will heal. If a node goes down it is forgotten and
-does not have to ever be restarted - the mesh keeps working. Adding new node can be done at any point in time by
-pointing new meshmonitor process at on of the exiting nodes.
+does not have to ever be restarted - the mesh keeps working. Adding a new node can be done at any time by
+pointing a new meshmonitor process at one of the existing nodes.
 
-NOTE: The IP passed to Meshmonitor at startup is treated differently - meshmonitor will always try to reconnect to it.
+NOTE: The IP passed to meshmonitor at startup is treated differently - meshmonitor will always try to reconnect to it.
 
 ## Openmetrics / Prometheus
 
-Meshmonitor starts a simple web server on port 12223 that exposes Prometheus compatible metrics under /metrics endpoint.
-It can be further configured to bind to non default network interface using `-m` option.
+Meshmonitor starts a simple web server on port 12223 that exposes Prometheus compatible metrics at the /metrics endpoint.
+Optionally, it can be configured to bind to a non-default network interface using the `-m` option.
 
-This functionality can be disabled using `-d` option.
+The /metrics endpoint can be disabled using the `-d` option.
 
-### List of metrics
+### List of Metrics
 
 Each metric contains two basic labels:
 
-- `host_name` - the IP address of the host meshmonitor is running on. This is the address passed to the `--bind`
+- `host_name` - the IP address of the host that meshmonitor is running on. This is the address passed to the `--bind`
   or `-b` option.
-- `remote_host_name` - the IP address of the host meshmonitor is communicating with. It's defined by address passed to
+- `remote_host_name` - the IP address of the remote node that meshmonitor is communicating with. It's defined by the address passed to
   the `--bind` or `-b` option of the meshmonitor process running on the remote end.
 
-Metrics contain three histograms for each host in the mesh and are encoded according
-to [Prometheus format](https://prometheus.io/docs/instrumenting/exposition_formats/). This means that each histogram is
+Metrics contain three histograms for each host in the mesh and are encoded in
+[Prometheus format](https://prometheus.io/docs/instrumenting/exposition_formats/). This means that each histogram is
 defined by multiple metrics like `meshmonitor_receive_seconds_sum`, `..._count`, `..._bucket{}`.
 
 Monitoring systems and their frontends like Grafana or Datadog know how to interpret histograms and will typically hide
-individual metrics that define buckets and just expose a general histogram metrics derived from them. These would
-typically look like below:
+individual metrics that define buckets and just expose a general histogram derived from them. These would
+typically look like the following:
 
 | Histogram | Metric as seen in Datadog/Grafana | Description                                                                                                                  |
 |-----------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------|
@@ -198,9 +198,9 @@ typically look like below:
 | delta     | `meshmonitor_delta_seconds`       | The difference between the timestamp encoded in the heartbeat and when the heartbeat was received.                           |
 | send      | `meshmonitor_send_seconds`        | Time between *send* thread wakeups which should be close to 5ms. An ability of a thread to get scheduled in a timely manner. |
 
-Histograms contain following buckets: `10µs, 100µs, 500µs, 1ms, 2ms, 3ms, 4ms, 5ms, 6ms, 7ms, 8ms, 9ms, 10ms, 20ms, 30ms, 40ms, 50ms, 100ms, 200ms, 500ms, 1s, 2s, 5s, 10s, Inf+`.
+Histograms contain the following buckets: `10µs, 100µs, 500µs, 1ms, 2ms, 3ms, 4ms, 5ms, 6ms, 7ms, 8ms, 9ms, 10ms, 20ms, 30ms, 40ms, 50ms, 100ms, 200ms, 500ms, 1s, 2s, 5s, 10s, Inf+`.
 
-## Datadog monitoring
+## Datadog Monitoring
 
 To use a locally running Datadog agent to scrape meshmonitor metrics create or
 edit `/etc/datadog-agent/conf.d/openmetrics.d/conf.yaml` with following contents:
@@ -216,12 +216,12 @@ instances:
     histogram_buckets_as_distributions: true
 ```
 
-Just for the Meshmonitor we have created a Datadog dashboard that you can import
+A Datadog dashboard specific to meshmonitor is available. You can import it
 from [json file](dashboards/datadog.json).
 
-## Running from a jar
+## Running From a Jar
 
-To run meshmonitor from a jar file execute:
+Use the following command to run meshmonitor from the jar file:
 
 ```shell
 java -jar meshmonitor.jar <ARGS> 
