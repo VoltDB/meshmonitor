@@ -7,16 +7,11 @@
  */
 package org.voltdb.meshmonitor.cli;
 
-import org.voltdb.meshmonitor.ConsoleLogger;
-import org.voltdb.meshmonitor.MeshMonitor;
-import org.voltdb.meshmonitor.ServerManager;
-import org.voltdb.meshmonitor.GitPropertiesVersionProvider;
+import org.voltdb.meshmonitor.*;
 import org.voltdb.meshmonitor.metrics.SimplePrometheusMetricsServer;
 import picocli.CommandLine;
 
-import java.net.Inet4Address;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,8 +125,8 @@ public class MeshMonitorCommand implements Callable<Integer> {
                                  |@                            \{new GitPropertiesVersionProvider().getSimpleVersion()}
                                  """));
 
-        ConsoleLogger consoleLogger = new ConsoleLogger(enableDebugLogging);
-        ServerManager serverManager = new ServerManager(consoleLogger, Duration.ofMillis(pingIntervalMilliseconds));
+        ConsoleLogger consoleLogger = new ConsoleLogger(spec.commandLine().getOut(), enableDebugLogging);
+        ServerManager serverManager = new ServerManager(consoleLogger, Monitor::new, Duration.ofMillis(pingIntervalMilliseconds));
 
         MeshMonitor meshMonitor = new MeshMonitor(
                 consoleLogger,
@@ -143,7 +138,7 @@ public class MeshMonitorCommand implements Callable<Integer> {
 
         if (!disableMetrics) {
             SimplePrometheusMetricsServer server = new SimplePrometheusMetricsServer(
-                    new ConsoleLogger(enableDebugLogging),
+                    new ConsoleLogger(spec.commandLine().getOut(), enableDebugLogging),
                     metricsBindAddress,
                     serverManager);
 
