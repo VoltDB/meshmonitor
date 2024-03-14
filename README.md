@@ -1,4 +1,6 @@
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/VoltDB/meshmonitor/blob/master/LICENSE)
 [![Tests](https://github.com/VoltDB/meshmonitor/actions/workflows/test.yml/badge.svg)](https://github.com/VoltDB/meshmonitor/actions/workflows/test.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/VoltDB/meshmonitor)](https://github.com/VoltDB/meshmonitor/releases)
 
 # Table of Contents
 
