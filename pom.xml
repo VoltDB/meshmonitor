@@ -187,8 +187,6 @@
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>--enable-preview</compilerArgs>
-                    <source>21</source>
-                    <target>21</target>
                 </configuration>
             </plugin>
 
@@ -196,6 +194,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.2</version>
+                <configuration>
+                    <argLine>--enable-preview</argLine>
+                </configuration>
             </plugin>
 
             <!-- Used to configure output jar -->
@@ -246,6 +247,8 @@
                     <header>etc/license.txt</header>
                     <strictCheck>true</strictCheck>
                     <aggregate>true</aggregate>
+                    <failIfMissing>true</failIfMissing>
+                    <failIfUnknown>true</failIfUnknown>
                     <properties>
                         <project.inceptionYear>2024</project.inceptionYear>
                     </properties>
