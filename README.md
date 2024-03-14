@@ -1,3 +1,5 @@
+[![Tests](https://github.com/VoltDB/meshmonitor/actions/workflows/test.yml/badge.svg)](https://github.com/VoltDB/meshmonitor/actions/workflows/test.yml)
+
 # Table of Contents
 
 1. [Overview](#overview)
