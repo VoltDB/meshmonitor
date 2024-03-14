@@ -7,7 +7,6 @@
  */
 package org.voltdb.meshmonitor;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
@@ -16,12 +15,15 @@ import java.util.List;
 
 public class ServerManager {
 
-    private final List<Monitor> monitors = new ArrayList<>();
     private final ConsoleLogger consoleLogger;
+    private final MonitorFactory monitorFactory;
     private final Duration pingInterval;
 
-    public ServerManager(ConsoleLogger consoleLogger, Duration pingInterval) {
+    private final List<Monitor> monitors = new ArrayList<>();
+
+    public ServerManager(ConsoleLogger consoleLogger, MonitorFactory monitorFactory, Duration pingInterval) {
         this.consoleLogger = consoleLogger;
+        this.monitorFactory = monitorFactory;
         this.pingInterval = pingInterval;
     }
 
@@ -38,11 +40,12 @@ public class ServerManager {
                 .toList();
     }
 
-    public synchronized boolean createNewMonitorIfNotAlreadyPresent(SocketChannel channel, MeshMonitor meshMonitor, InetSocketAddress remoteId) throws IOException {
+    public synchronized boolean createNewMonitorIfNotAlreadyPresent(SocketChannel channel, MeshMonitor meshMonitor, InetSocketAddress remoteId) {
         if (!hasConnection(remoteId)) {
             MeshMonitorTimings timings = MeshMonitorTimings.createDefault(consoleLogger);
 
-            Monitor monitor = new Monitor(consoleLogger, meshMonitor, timings, pingInterval, channel, remoteId);
+            Monitor monitor = monitorFactory.newMonitor(consoleLogger, meshMonitor, timings, pingInterval, channel, remoteId);
+            monitor.start();
             monitors.add(monitor);
             return true;
         }

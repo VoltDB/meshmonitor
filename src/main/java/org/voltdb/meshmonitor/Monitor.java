@@ -44,7 +44,9 @@ public class Monitor {
         this.pingInterval = pingInterval;
         this.channel = channel;
         this.remoteId = remoteId;
+    }
 
+    public void start() {
         isRunning = true;
 
         SendThread sendThread = new SendThread(channel);

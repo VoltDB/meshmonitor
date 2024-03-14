@@ -7,6 +7,7 @@
  */
 package org.voltdb.meshmonitor;
 
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.time.LocalDateTime;
@@ -46,9 +47,11 @@ public class ConsoleLogger {
 
     public static final String EMPTY_HOST_ADDRESS = "";
 
+    private final PrintWriter out;
     private final boolean enableDebugLogging;
 
-    public ConsoleLogger(boolean enableDebugLogging) {
+    public ConsoleLogger(PrintWriter out, boolean enableDebugLogging) {
+        this.out = out;
         this.enableDebugLogging = enableDebugLogging;
     }
 
@@ -63,10 +66,10 @@ public class ConsoleLogger {
 
     private void log(String hostAddress, LogLevel logLevel, String message, Object... args) {
         String dateTime = TIME_FORMATTER.format(LocalDateTime.now());
-        String colourfulDateTime = CommandLine.Help.Ansi.ON.string(String.format("@|%s %s|@", logLevel, dateTime));
-        String colourfulHostAddress = CommandLine.Help.Ansi.ON.string(String.format("@|%s [%15s]|@", logLevel, hostAddress));
+        String colourfulDateTime = CommandLine.Help.Ansi.AUTO.string(String.format("@|%s %s|@", logLevel, dateTime));
+        String colourfulHostAddress = CommandLine.Help.Ansi.AUTO.string(String.format("@|%s [%15s]|@", logLevel, hostAddress));
 
-        System.out.println(colourfulDateTime + " " + colourfulHostAddress + " " + message.formatted(args));
+        out.println(colourfulDateTime + " " + colourfulHostAddress + " " + message.formatted(args));
     }
 
     public void debug(InetSocketAddress socketAddress, String format, Object... args) {
@@ -90,7 +93,7 @@ public class ConsoleLogger {
     public void fatalError(String message, Exception e) {
         log(EMPTY_HOST_ADDRESS, LogLevel.ERROR, message + ". " + e.getMessage());
         if (enableDebugLogging) {
-            e.printStackTrace();
+            e.printStackTrace(out);
         }
     }
 }
