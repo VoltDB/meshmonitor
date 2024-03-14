@@ -1,7 +1,7 @@
 package org.voltdb.meshmonitor.metrics;
 
 import org.junit.jupiter.api.Test;
-import org.voltdb.meshmonitor.ConsoleLogger;
+import org.voltdb.meshmonitor.ConsoleLoggerTest;
 import org.voltdb.meshmonitor.MeshMonitorTimings;
 import org.voltdb.meshmonitor.Monitor;
 
@@ -18,7 +18,7 @@ class MonitorStatsPrinterTest {
     @Test
     void shouldPrintOutputOfAllHistograms() {
         // Given
-        MeshMonitorTimings timings = MeshMonitorTimings.createDefault(new ConsoleLogger(false));
+        MeshMonitorTimings timings = MeshMonitorTimings.createDefault(ConsoleLoggerTest.loggerForTest());
         timings.sendHistogram().recordValueWithExpectedInterval(5, 5);
         timings.deltaHistogram().recordValueWithExpectedInterval(15, 15);
         timings.receiveHistogram().recordValueWithExpectedInterval(42, 42);

@@ -4,10 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.voltdb.meshmonitor.ConsoleLogger;
-import org.voltdb.meshmonitor.MeshMonitorTimings;
-import org.voltdb.meshmonitor.Monitor;
-import org.voltdb.meshmonitor.ServerManager;
+import org.voltdb.meshmonitor.*;
 
 import java.net.InetSocketAddress;
 import java.util.Arrays;
@@ -22,7 +19,7 @@ class SimplePrometheusMetricsServerTest {
 
     private static final int EXPECTED_ERROR_CODE = 404;
 
-    private static final ConsoleLogger LOGGER = new ConsoleLogger(false);
+    private static final ConsoleLogger LOGGER = ConsoleLoggerTest.loggerForTest();
 
     private static SimplePrometheusMetricsServer server;
 

@@ -3,7 +3,7 @@ package org.voltdb.meshmonitor.metrics;
 import org.HdrHistogram.SynchronizedHistogram;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.voltdb.meshmonitor.ConsoleLogger;
+import org.voltdb.meshmonitor.ConsoleLoggerTest;
 import org.voltdb.meshmonitor.MeshMonitorTimings;
 
 import java.net.InetSocketAddress;
@@ -17,7 +17,7 @@ public class HistogramPrinterTest {
 
     @BeforeEach
     void setUp() {
-        histogram = MeshMonitorTimings.createDefault(new ConsoleLogger(false))
+        histogram = MeshMonitorTimings.createDefault(ConsoleLoggerTest.loggerForTest())
                 .deltaHistogram()
                 .getCumulativeHistogram();
     }
