@@ -7,25 +7,27 @@
  */
 package org.voltdb.meshmonitor;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.voltdb.meshmonitor.ConsoleLoggerTest.loggerForTest;
 
 class MeshMonitorTimingsTest {
 
     private MeshMonitorTimings timings;
 
-    @BeforeEach
-    void setUp() {
-        // Initialize with a simple logger that doesn't output to console to avoid cluttering test output.
-        ConsoleLogger logger = loggerForTest();
-        timings = MeshMonitorTimings.createDefault(logger);
-    }
-
     @Test
     void shouldRecordPingReceivedProperly() {
         // Given
+        MeshMonitorTimings timings = MeshMonitorTimings.createDefault(loggerForTest());
+
+        long expected = TimeUnit.MILLISECONDS.toMicros(10);
+
         long now = 100_000L; // Simulated current time
         long lastReceiveTime = 95_000L; // Simulated last receive time
         long timestampFromRemoteHost = 98_000L; // Simulated timestamp from remote host
@@ -35,22 +37,21 @@ class MeshMonitorTimingsTest {
         timings.pingReceived(now, lastReceiveTime, timestampFromRemoteHost, pingInterval);
 
         // Then
-        // Direct assertions on histograms are not possible without exposing histogram data.
-        // Assuming we can check histograms indirectly via public API or simulated effects.
-        // This would ideally be more specific, such as checking that counts increased or specific values are within expected ranges.
     }
 
     @Test
     void shouldTrackWakeupJitterProperly() {
         // Given
-        long observedInterval = 5_050L; // Observed interval slightly higher than expected
-        long expectedInterval = 5_000L; // Expected interval
+        MeshMonitorTimings timings = MeshMonitorTimings.createDefault(loggerForTest());
+
+        long expected = TimeUnit.MILLISECONDS.toMicros(10);
 
         // When
-        timings.trackWakeupJitter(observedInterval, expectedInterval);
+        timings.trackWakeupJitter(expected, expected);
 
         // Then
-        // Assertions similar to `shouldRecordPingReceivedProperly`, focusing on sendHistogram.
+        long actual = timings.sendHistogram().getCumulativeHistogram().getCountAtValue(expected);
+        assertThat(actual).isEqualTo(1);
     }
 
     @Test
@@ -68,6 +69,4 @@ class MeshMonitorTimingsTest {
         // Then
         // Assertions focusing on deltaHistogram to verify handling of negative delta correctly by taking absolute value.
     }
-
-    // Additional tests can be designed based on other edge cases or behaviors you wish to verify.
 }
