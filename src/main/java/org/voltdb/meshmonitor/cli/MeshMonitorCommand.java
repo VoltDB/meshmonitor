@@ -7,16 +7,11 @@
  */
 package org.voltdb.meshmonitor.cli;
 
-import org.voltdb.meshmonitor.ConsoleLogger;
-import org.voltdb.meshmonitor.MeshMonitor;
-import org.voltdb.meshmonitor.ServerManager;
-import org.voltdb.meshmonitor.GitPropertiesVersionProvider;
+import org.voltdb.meshmonitor.*;
 import org.voltdb.meshmonitor.metrics.SimplePrometheusMetricsServer;
 import picocli.CommandLine;
 
-import java.net.Inet4Address;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,14 +104,6 @@ public class MeshMonitorCommand implements Callable<Integer> {
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
 
-    static String getLocalHost() {
-        try {
-            return Inet4Address.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            return "127.0.0.1";
-        }
-    }
-
     public static void main(String[] args) {
         CommandLine commandLine = new CommandLine(new MeshMonitorCommand());
         int exitCode = commandLine.execute(args);
@@ -135,11 +122,11 @@ public class MeshMonitorCommand implements Callable<Integer> {
                                    / /|_/ / _ \\/ ___/ __ \\/ __ `__ \\/ __ \\/ __ \\/ / __/ __ \\/ ___/
                                   / /  / /  __(__  ) / / / / / / / / /_/ / / / / / /_/ /_/ / /   \s
                                  /_/  /_/\\___/____/_/ /_/_/ /_/ /_/\\____/_/ /_/_/\\__/\\____/_/ \s
-                                 |@                            \{GitPropertiesVersionProvider.getSimpleVersion()}
+                                 |@                            \{new GitPropertiesVersionProvider().getSimpleVersion()}
                                  """));
 
-        ConsoleLogger consoleLogger = new ConsoleLogger(enableDebugLogging);
-        ServerManager serverManager = new ServerManager(consoleLogger, Duration.ofMillis(pingIntervalMilliseconds));
+        ConsoleLogger consoleLogger = new ConsoleLogger(spec.commandLine().getOut(), enableDebugLogging);
+        ServerManager serverManager = new ServerManager(consoleLogger, Monitor::new, Duration.ofMillis(pingIntervalMilliseconds));
 
         MeshMonitor meshMonitor = new MeshMonitor(
                 consoleLogger,
@@ -151,7 +138,7 @@ public class MeshMonitorCommand implements Callable<Integer> {
 
         if (!disableMetrics) {
             SimplePrometheusMetricsServer server = new SimplePrometheusMetricsServer(
-                    new ConsoleLogger(enableDebugLogging),
+                    new ConsoleLogger(spec.commandLine().getOut(), enableDebugLogging),
                     metricsBindAddress,
                     serverManager);
 

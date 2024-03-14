@@ -48,29 +48,29 @@ public class HistogramLogger {
         String p999 = getFormatWithColours(deltaHistogram.getValueAtPercentile(99.9) / 1000.0, minHiccupSize);
         String p9999 = getFormatWithColours(deltaHistogram.getValueAtPercentile(99.99) / 1000.0, minHiccupSize);
 
-        return max + " " + mean + " " + p99 + " " + p999 + " " + p9999;
+        return STR."\{max} \{mean} \{p99} \{p999} \{p9999}";
     }
 
     private String getFormatWithColours(double value, double minHiccupSize) {
         if (value > 999.9) {
             String formatted = "%4.1fs".formatted(value / 1000.0);
-            return CommandLine.Help.Ansi.ON.string("@|bold,red " + formatted + "|@");
+            return CommandLine.Help.Ansi.AUTO.string("@|bold,red " + formatted + "|@");
         }
 
         String formatted = "%5.1f".formatted(value);
         if (value > minHiccupSize) {
-            return CommandLine.Help.Ansi.ON.string("@|bold,yellow " + formatted + "|@");
+            return CommandLine.Help.Ansi.AUTO.string("@|bold,yellow " + formatted + "|@");
         }
 
         return formatted;
     }
 
     public void printHeader() {
-        String max = CommandLine.Help.Ansi.ON.string("@|bold,underline   Max|@");
-        String mean = CommandLine.Help.Ansi.ON.string("@|bold,underline  Mean|@");
-        String p99 = CommandLine.Help.Ansi.ON.string("@|bold,underline    99|@");
-        String p999 = CommandLine.Help.Ansi.ON.string("@|bold,underline  99.9|@");
-        String p9999 = CommandLine.Help.Ansi.ON.string("@|bold,underline 99.99|@");
+        String max = CommandLine.Help.Ansi.AUTO.string("@|bold,underline   Max|@");
+        String mean = CommandLine.Help.Ansi.AUTO.string("@|bold,underline  Mean|@");
+        String p99 = CommandLine.Help.Ansi.AUTO.string("@|bold,underline    99|@");
+        String p999 = CommandLine.Help.Ansi.AUTO.string("@|bold,underline  99.9|@");
+        String p9999 = CommandLine.Help.Ansi.AUTO.string("@|bold,underline 99.99|@");
         String singleHistogramHeader = max + " " + mean + " " + p99 + " " + p999 + " " + p9999;
 
         String receive = "----------ping-(ms)----------";
