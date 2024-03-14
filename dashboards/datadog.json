@@ -160,7 +160,6 @@
           "value",
           "sum"
         ],
-        "time": {},
         "type": "timeseries",
         "requests": [
           {
@@ -179,7 +178,7 @@
               {
                 "name": "query1",
                 "data_source": "metrics",
-                "query": "p99.9:meshmonitor.meshmonitor_receive_seconds{$source}"
+                "query": "p99.9:meshmonitor.meshmonitor_receive_seconds{$source, $destination} by {host_name,remote_host_name}"
               }
             ],
             "response_format": "timeseries",
@@ -232,7 +231,7 @@
               {
                 "name": "query1",
                 "data_source": "metrics",
-                "query": "p99.9:meshmonitor.meshmonitor_delta_seconds{$source}"
+                "query": "p99.9:meshmonitor.meshmonitor_delta_seconds{$source, $destination} by {host_name,remote_host_name}"
               }
             ],
             "response_format": "timeseries",
@@ -273,7 +272,6 @@
           "value",
           "sum"
         ],
-        "time": {},
         "type": "timeseries",
         "requests": [
           {
@@ -292,7 +290,7 @@
               {
                 "name": "query1",
                 "data_source": "metrics",
-                "query": "p99.9:meshmonitor.meshmonitor_send_seconds{$source}"
+                "query": "p99.9:meshmonitor.meshmonitor_send_seconds{$source, $destination}"
               }
             ],
             "response_format": "timeseries",
