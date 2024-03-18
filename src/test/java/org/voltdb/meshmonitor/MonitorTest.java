@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
@@ -242,6 +243,11 @@ class MonitorTest {
     }
 
     public static InetSocketAddress address(String hostname) {
-        return address(hostname, ThreadLocalRandom.current().nextInt());
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            int port = serverSocket.getLocalPort();
+            return address(hostname, port);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
