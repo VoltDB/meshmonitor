@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2024 Volt Active Data Inc.
+ *
+ * Use of this source code is governed by an MIT
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
 package org.voltdb.meshmonitor;
 
 import org.junit.jupiter.api.Test;
@@ -99,7 +106,7 @@ class MeshMonitorTest {
                 address("127.0.0.1")
         );
 
-        MonitorFactory monitorFactory = (logger, meshMonitor, timings, pingInterval, channel, remoteId) -> new FakeMonitor(remoteId);
+        MonitorFactory monitorFactory = (_, _, _, _, _, remoteId) -> new FakeMonitor(remoteId);
         ServerManager serverManager = new ServerManager(
                 loggerForTest(),
                 monitorFactory,
@@ -137,7 +144,7 @@ class MeshMonitorTest {
         InetSocketAddress localAddress = address("127.0.0.1");
         InetSocketAddress remoteAddress = address("127.0.0.1");
 
-        MonitorFactory monitorFactory = (logger, meshMonitor, timings, pingInterval, channel, remoteId) -> new FakeMonitor(remoteId);
+        MonitorFactory monitorFactory = (_, _, _, _, _, remoteId) -> new FakeMonitor(remoteId);
         ServerManager serverManager = new ServerManager(
                 loggerForTest(),
                 monitorFactory,
@@ -176,7 +183,7 @@ class MeshMonitorTest {
         InetSocketAddress localAddress = address("127.0.0.1");
         InetSocketAddress remoteAddress = address("127.0.0.1");
 
-        MonitorFactory monitorFactory = (logger, meshMonitor, timings, pingInterval, channel, remoteId) -> new FakeMonitor(remoteId);
+        MonitorFactory monitorFactory = (_, _, _, _, _, remoteId) -> new FakeMonitor(remoteId);
         ServerManager serverManager = new ServerManager(
                 loggerForTest(),
                 monitorFactory,
@@ -205,7 +212,7 @@ class MeshMonitorTest {
         InetSocketAddress localAddress = address("127.0.0.1");
         InetSocketAddress remoteAddress = address("127.0.0.1");
 
-        MonitorFactory monitorFactory = (logger, meshMonitor, timings, pingInterval, channel, remoteId) -> new FakeMonitor(remoteId);
+        MonitorFactory monitorFactory = (_, _, _, _, _, remoteId) -> new FakeMonitor(remoteId);
         ServerManager serverManager = new ServerManager(
                 loggerForTest(),
                 monitorFactory,

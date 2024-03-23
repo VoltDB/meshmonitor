@@ -27,7 +27,7 @@ class ServerManagerTest {
     @Test
     void shouldCreateNewMonitorForNewConnection() {
         // Given
-        MonitorFactory monitorFactory = (logger, meshMonitor, timings, pingInterval, channel, remoteId) -> new FakeMonitor(remoteId);
+        MonitorFactory monitorFactory = (_, _, _, _, _, remoteId) -> new FakeMonitor(remoteId);
         ServerManager serverManager = new ServerManager(
                 loggerForTest(),
                 monitorFactory,
@@ -47,7 +47,7 @@ class ServerManagerTest {
     @Test
     void shouldNotCreateNewMonitorIfOneIsAlreadyPresent() {
         // Given
-        MonitorFactory monitorFactory = (logger, meshMonitor, timings, pingInterval, channel, remoteId) -> new FakeMonitor(remoteId);
+        MonitorFactory monitorFactory = (_, _, _, _, _, remoteId) -> new FakeMonitor(remoteId);
         ServerManager serverManager = new ServerManager(
                 loggerForTest(),
                 monitorFactory,
