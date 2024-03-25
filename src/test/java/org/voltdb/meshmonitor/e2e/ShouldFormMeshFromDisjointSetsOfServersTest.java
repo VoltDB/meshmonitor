@@ -10,26 +10,14 @@ public class ShouldFormMeshFromDisjointSetsOfServersTest extends ContainerTestBa
 
     @Test
     void shouldSetupMeshAndWorkEvenWhenMainNodeStartsLast() {
-        meshmonitor0.withCommand("java",
-                "--enable-preview",
-                "-cp",
-                "/home/meshmonitor/target/meshmonitor-1.0.0-jar-with-dependencies.jar",
-                "org.voltdb.meshmonitor.cli.MeshMonitorCommand",
-                "-i",
-                "1",
+        meshmonitor0.withCommand("/home/meshmonitor/meshmonitor.sh",
                 "-m",
                 "192.168.0.2:12223",
                 "-b",
                 "192.168.0.2:12222"
         ).start();
 
-        meshmonitor1.withCommand("java",
-                "--enable-preview",
-                "-cp",
-                "/home/meshmonitor/target/meshmonitor-1.0.0-jar-with-dependencies.jar",
-                "org.voltdb.meshmonitor.cli.MeshMonitorCommand",
-                "-i",
-                "1",
+        meshmonitor1.withCommand("/home/meshmonitor/meshmonitor.sh",
                 "-m",
                 "192.168.0.3:12223",
                 "-b",
@@ -37,13 +25,7 @@ public class ShouldFormMeshFromDisjointSetsOfServersTest extends ContainerTestBa
                 "192.168.0.2"
         ).start();
 
-        meshmonitor2.withCommand("java",
-                "--enable-preview",
-                "-cp",
-                "/home/meshmonitor/target/meshmonitor-1.0.0-jar-with-dependencies.jar",
-                "org.voltdb.meshmonitor.cli.MeshMonitorCommand",
-                "-i",
-                "1",
+        meshmonitor2.withCommand("/home/meshmonitor/meshmonitor.sh",
                 "-m",
                 "192.168.0.4:12223",
                 "-b",

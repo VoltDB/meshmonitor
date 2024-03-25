@@ -29,10 +29,19 @@ public class ContainerTestBase {
 
     private static final ImageFromDockerfile IMAGE = new ImageFromDockerfile()
             .withFileFromFile("/home/meshmonitor", new File(".").getAbsoluteFile().getParentFile())
+            .withFileFromString("/home/meshmonitor/meshmonitor.sh", """
+                    #!/bin/bash
+                                        
+                    java --enable-preview \\
+                         -cp "/home/meshmonitor/target/meshmonitor-1.0.0-jar-with-dependencies.jar" \\
+                         org.voltdb.meshmonitor.cli.MeshMonitorCommand -i 1 "$@"
+                    """)
             .withDockerfileFromBuilder(builder ->
                     builder
                             .from("ghcr.io/graalvm/graalvm-community:21.0.1-ol9-20231024")
                             .copy("/home/meshmonitor", "/home/meshmonitor")
+                            .copy("/home/meshmonitor/meshmonitor.sh", "/home/meshmonitor/meshmonitor.sh")
+                            .run("chmod +x /home/meshmonitor/meshmonitor.sh")
                             .workDir("/home/meshmonitor/")
                             .build()
             );
@@ -57,13 +66,7 @@ public class ContainerTestBase {
             .withLogConsumer((Consumer<OutputFrame>) outputFrame -> System.out.println(outputFrame.getUtf8StringWithoutLineEnding()))
             .withLogConsumer((Consumer<OutputFrame>) outputFrame -> logs0.append(outputFrame.getUtf8String()))
             .waitingFor(Wait.forLogMessage(".*Starting meshmonitor.*", 1))
-            .withCommand("java",
-                    "--enable-preview",
-                    "-cp",
-                    "/home/meshmonitor/target/meshmonitor-1.0.0-jar-with-dependencies.jar",
-                    "org.voltdb.meshmonitor.cli.MeshMonitorCommand",
-                    "-i",
-                    "1",
+            .withCommand("/home/meshmonitor/meshmonitor.sh",
                     "-m",
                     "192.168.0.2:12223",
                     "-b",
@@ -78,13 +81,7 @@ public class ContainerTestBase {
             .withLogConsumer((Consumer<OutputFrame>) outputFrame -> System.out.println(outputFrame.getUtf8StringWithoutLineEnding()))
             .withLogConsumer((Consumer<OutputFrame>) outputFrame -> logs1.append(outputFrame.getUtf8String()))
             .waitingFor(Wait.forLogMessage(".*Starting meshmonitor.*", 1))
-            .withCommand("java",
-                    "--enable-preview",
-                    "-cp",
-                    "/home/meshmonitor/target/meshmonitor-1.0.0-jar-with-dependencies.jar",
-                    "org.voltdb.meshmonitor.cli.MeshMonitorCommand",
-                    "-i",
-                    "1",
+            .withCommand("/home/meshmonitor/meshmonitor.sh",
                     "-m",
                     "192.168.0.3:12223",
                     "-b",
@@ -101,13 +98,7 @@ public class ContainerTestBase {
             .withLogConsumer((Consumer<OutputFrame>) outputFrame -> System.out.println(outputFrame.getUtf8StringWithoutLineEnding()))
             .withLogConsumer((Consumer<OutputFrame>) outputFrame -> logs2.append(outputFrame.getUtf8String()))
             .waitingFor(Wait.forLogMessage(".*Starting meshmonitor.*", 1))
-            .withCommand("java",
-                    "--enable-preview",
-                    "-cp",
-                    "/home/meshmonitor/target/meshmonitor-1.0.0-jar-with-dependencies.jar",
-                    "org.voltdb.meshmonitor.cli.MeshMonitorCommand",
-                    "-i",
-                    "1",
+            .withCommand("/home/meshmonitor/meshmonitor.sh",
                     "-m",
                     "192.168.0.4:12223",
                     "-b",
