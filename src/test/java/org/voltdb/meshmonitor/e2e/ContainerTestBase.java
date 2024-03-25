@@ -29,7 +29,7 @@ public class ContainerTestBase {
         System.out.println("absoluteFile = " + absoluteFile);
         System.out.println("parent = " + absoluteFile.getParentFile());
         try {
-            System.out.println("ls = " + Files.list(absoluteFile.getParentFile().toPath()));
+            System.out.println("ls = " + Files.list(absoluteFile.getParentFile().toPath()).toList());
         } catch (IOException e) {
             e.printStackTrace();
         }
