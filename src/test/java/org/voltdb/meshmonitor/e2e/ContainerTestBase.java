@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2024 Volt Active Data Inc.
+ *
+ * Use of this source code is governed by an MIT
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
 package org.voltdb.meshmonitor.e2e;
 
 import com.github.dockerjava.api.command.CreateContainerCmd;
@@ -23,20 +30,6 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ContainerTestBase {
-
-    static {
-        File absoluteFile = new File(".").getAbsoluteFile();
-        File parentFile = absoluteFile.getParentFile();
-
-        System.out.println("absoluteFile = " + absoluteFile);
-        System.out.println("parent = " + parentFile);
-        try {
-            File target = new File(parentFile, "target");
-            System.out.println("ls target = " + Files.list(target.toPath()).toList());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static final ImageFromDockerfile IMAGE = new ImageFromDockerfile()
             .withFileFromFile("/home/meshmonitor", new File(".").getAbsoluteFile().getParentFile())

@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2024 Volt Active Data Inc.
+ *
+ * Use of this source code is governed by an MIT
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
 package org.voltdb.meshmonitor.e2e;
 
 import org.awaitility.Durations;
@@ -6,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
-public class FormMeshIfMainNodeStartsLastTest extends ContainerTestBase {
+public class FormMeshIfMainNodeStartsLastIT extends ContainerTestBase {
 
     @Test
     void shouldSetupMeshAndWorkEvenWhenMainNodeStartsLast() {
