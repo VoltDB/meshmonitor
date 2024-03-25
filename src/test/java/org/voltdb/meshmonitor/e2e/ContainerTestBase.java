@@ -10,6 +10,8 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.function.Consumer;
 
 /*
@@ -21,6 +23,17 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ContainerTestBase {
+
+    static {
+        File absoluteFile = new File(".").getAbsoluteFile();
+        System.out.println("absoluteFile = " + absoluteFile);
+        System.out.println("parent = " + absoluteFile.getParentFile());
+        try {
+            System.out.println("ls = " + Files.list(absoluteFile.getParentFile().toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static final ImageFromDockerfile IMAGE = new ImageFromDockerfile()
             .withFileFromFile("/home/meshmonitor", new File(".").getAbsoluteFile().getParentFile())
