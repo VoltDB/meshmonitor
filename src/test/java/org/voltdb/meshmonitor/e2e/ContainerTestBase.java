@@ -3,12 +3,9 @@ package org.voltdb.meshmonitor.e2e;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.model.Network.Ipam;
 import org.junit.jupiter.api.AfterEach;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.OutputFrame;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
@@ -24,8 +21,6 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ContainerTestBase {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContainerTestBase.class);
 
     private static final ImageFromDockerfile IMAGE = new ImageFromDockerfile()
             .withFileFromFile("/home/meshmonitor", new File(".").getAbsoluteFile().getParentFile())
@@ -94,7 +89,6 @@ public class ContainerTestBase {
             .withNetwork(network);
 
     public GenericContainer meshmonitor2 = new GenericContainer(IMAGE)
-            .withLogConsumer(new Slf4jLogConsumer(LOGGER))
             .withLogConsumer((Consumer<OutputFrame>) outputFrame -> System.out.println(outputFrame.getUtf8StringWithoutLineEnding()))
             .withLogConsumer((Consumer<OutputFrame>) outputFrame -> logs2.append(outputFrame.getUtf8String()))
             .waitingFor(Wait.forLogMessage(".*Starting meshmonitor.*", 1))
