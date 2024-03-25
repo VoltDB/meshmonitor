@@ -166,5 +166,7 @@ public class MeshMonitor {
         } else {
             consoleLogger.error(remoteId, e.getMessage());
         }
+
+        serverManager.removeConnection(remoteId);
     }
 }

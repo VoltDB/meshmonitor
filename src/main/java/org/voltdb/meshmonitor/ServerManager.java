@@ -53,6 +53,10 @@ public class ServerManager {
         return false;
     }
 
+    public synchronized boolean removeConnection(InetSocketAddress remoteId) {
+        return monitors.removeIf(monitor -> monitor.getRemoteId().equals(remoteId));
+    }
+
     public synchronized boolean hasConnection(InetSocketAddress remoteId) {
         return monitors.stream()
                 .filter(Monitor::isRunning)

@@ -8,8 +8,6 @@
 package org.voltdb.meshmonitor;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
@@ -19,7 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.voltdb.meshmonitor.ConsoleLoggerTest.loggerForTest;
 
-@ExtendWith(MockitoExtension.class)
 class ServerManagerTest {
 
     private static final InetSocketAddress REMOTE_ID_1 = new InetSocketAddress("10.1.0.2", 8080);
@@ -30,7 +27,7 @@ class ServerManagerTest {
     @Test
     void shouldCreateNewMonitorForNewConnection() {
         // Given
-        MonitorFactory monitorFactory = (logger, meshMonitor, timings, pingInterval, channel, remoteId) -> new FakeMonitor(remoteId);
+        MonitorFactory monitorFactory = (_, _, _, _, _, remoteId) -> new FakeMonitor(remoteId);
         ServerManager serverManager = new ServerManager(
                 loggerForTest(),
                 monitorFactory,
@@ -50,7 +47,7 @@ class ServerManagerTest {
     @Test
     void shouldNotCreateNewMonitorIfOneIsAlreadyPresent() {
         // Given
-        MonitorFactory monitorFactory = (logger, meshMonitor, timings, pingInterval, channel, remoteId) -> new FakeMonitor(remoteId);
+        MonitorFactory monitorFactory = (_, _, _, _, _, remoteId) -> new FakeMonitor(remoteId);
         ServerManager serverManager = new ServerManager(
                 loggerForTest(),
                 monitorFactory,
@@ -97,29 +94,5 @@ class ServerManagerTest {
 
         assertThat(serverManager.hasConnection(REMOTE_ID_1)).isTrue();
         assertThat(serverManager.hasConnection(REMOTE_ID_2)).isFalse();
-    }
-
-    static class FakeMonitor extends Monitor {
-
-        private final boolean isRunning;
-
-        public FakeMonitor(InetSocketAddress remoteId) {
-            super(loggerForTest(), null, null, PING_INTERVAL, null, remoteId);
-            isRunning = true;
-        }
-
-        public FakeMonitor(InetSocketAddress remoteId, boolean isRunning) {
-            super(loggerForTest(), null, null, PING_INTERVAL, null, remoteId);
-            this.isRunning = isRunning;
-        }
-
-        @Override
-        public void start() {
-        }
-
-        @Override
-        public boolean isRunning() {
-            return isRunning;
-        }
     }
 }
