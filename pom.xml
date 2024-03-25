@@ -326,7 +326,9 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>java</executable>
+                            <executable>
+                                /Users/tkowalcz/Library/Java/JavaVirtualMachines/graalvm-jdk-21.0.1/Contents/Home/bin/java
+                            </executable>
                             <arguments>
                                 <argument>--enable-preview</argument>
                                 <argument>-Dpicocli.autocomplete.systemExitOnError</argument>
