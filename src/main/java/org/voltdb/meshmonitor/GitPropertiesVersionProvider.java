@@ -47,8 +47,12 @@ public class GitPropertiesVersionProvider implements CommandLine.IVersionProvide
     public String getSimpleVersion() {
         try {
             Properties properties = new Properties();
+            InputStream inStream = propertiesFileLoader.get();
+            if (inStream == null) {
+                return VERSION_UNKNOWN;
+            }
 
-            properties.load(propertiesFileLoader.get());
+            properties.load(inStream);
 
             String maybeTags = Objects.toString(properties.get(GIT_TAGS_PROPERTY), "");
             String maybeBuildTime = Objects.toString(properties.get(GIT_BUILD_TIME_PROPERTY), "");
