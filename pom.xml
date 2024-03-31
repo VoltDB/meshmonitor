@@ -474,7 +474,7 @@
                                 <jvmArg>--enable-preview</jvmArg>
                             </jvmArgs>
                             <fallback>false</fallback>
-                            <buildArgs>-march=compatibility --static --report-unsupported-elements-at-runtime</buildArgs>
+                            <buildArgs>-march=compatibility --static --report-unsupported-elements-at-runtime -H:IncludeResources=git.properties</buildArgs>
                         </configuration>
                     </plugin>
                 </plugins>
