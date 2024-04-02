@@ -31,6 +31,7 @@ public class Monitor {
     private final Duration pingInterval;
 
     private volatile boolean isRunning;
+    private ReceiveThread receiveThread;
 
     public Monitor(ConsoleLogger logger,
                    MeshMonitor meshMonitor,
@@ -51,7 +52,7 @@ public class Monitor {
 
         SendThread sendThread = new SendThread(channel);
         sendThread.start();
-        ReceiveThread receiveThread = new ReceiveThread(channel);
+        receiveThread = new ReceiveThread(channel);
         receiveThread.start();
     }
 
@@ -86,6 +87,7 @@ public class Monitor {
                 }
                 System.out.println("ReceiveThread Exiting");
             } catch (IOException e) {
+                e.printStackTrace();
                 isRunning = false;
                 meshMonitor.onDisconnect(remoteId, e);
             }
@@ -116,7 +118,9 @@ public class Monitor {
                 }
                 System.out.println("SendThread Exiting");
             } catch (IOException e) {
+                e.printStackTrace();
                 isRunning = false;
+                receiveThread.interrupt();
                 meshMonitor.onDisconnect(remoteId, e);
             }
         }
