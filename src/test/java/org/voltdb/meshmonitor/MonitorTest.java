@@ -148,10 +148,13 @@ public class MonitorTest {
         InetSocketAddress nodeB = address("127.0.0.1");
 
         ServerSocketChannel nodeBChannel = ServerSocketChannel.open();
+        nodeBChannel.socket().setSoTimeout(10_000);
         nodeBChannel.socket().bind(nodeB);
         Future<SocketChannel> nodeAConnection = Executors.newFixedThreadPool(1).submit(nodeBChannel::accept);
 
-        SocketChannel connectionToNodeB = SocketChannel.open(nodeB);
+        SocketChannel connectionToNodeB = SocketChannel.open();
+        connectionToNodeB.socket().setSoTimeout(10_000);
+        connectionToNodeB.connect(nodeB);
 
         MeshMonitor meshMonitor1 = mock(MeshMonitor.class);
         MeshMonitor meshMonitor2 = mock(MeshMonitor.class);
@@ -202,10 +205,13 @@ public class MonitorTest {
         InetSocketAddress nodeB = address("127.0.0.1");
 
         ServerSocketChannel nodeBChannel = ServerSocketChannel.open();
+        nodeBChannel.socket().setSoTimeout(10_000);
         nodeBChannel.socket().bind(nodeB);
         Future<SocketChannel> nodeAConnection = Executors.newFixedThreadPool(1).submit(nodeBChannel::accept);
 
-        SocketChannel connectionToNodeB = SocketChannel.open(nodeB);
+        SocketChannel connectionToNodeB = SocketChannel.open();
+        connectionToNodeB.socket().setSoTimeout(10_000);
+        connectionToNodeB.connect(nodeB);
         Futures.getUnchecked(nodeAConnection);
 
         MeshMonitor meshMonitor1 = mock(MeshMonitor.class);
@@ -231,7 +237,6 @@ public class MonitorTest {
         );
         monitor1.start();
 
-        nodeAConnection.get(5, TimeUnit.SECONDS);
         IOUtils.closeQuietly(nodeBChannel);
         IOUtils.closeQuietly(connectionToNodeB);
 

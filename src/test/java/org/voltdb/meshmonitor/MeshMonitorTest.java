@@ -80,6 +80,7 @@ class MeshMonitorTest {
         List<Future<SocketChannel>> sockets = new ArrayList<>();
         for (InetSocketAddress address : addresses) {
             ServerSocketChannel serverSocket = ServerSocketChannel.open();
+            serverSocket.socket().setSoTimeout(10_000);
             serverSocket.bind(address);
 
             Future<SocketChannel> connection = Executors.newFixedThreadPool(1).submit(serverSocket::accept);
@@ -127,7 +128,10 @@ class MeshMonitorTest {
 
         await().atMost(Durations.TEN_SECONDS).untilAsserted(() -> {
             for (InetSocketAddress address : addresses) {
-                SocketChannel channel = SocketChannel.open(localAddress);
+                SocketChannel channel = SocketChannel.open();
+                channel.socket().setSoTimeout(10_000);
+                channel.connect(localAddress);
+
                 PacketSerializer.writeHelloMessage(channel, address);
             }
         });
@@ -164,7 +168,10 @@ class MeshMonitorTest {
         Executors.newFixedThreadPool(1).submit(() -> meshMonitor.start(false));
 
         await().atMost(Durations.TEN_SECONDS).untilAsserted(() -> {
-            SocketChannel channel = SocketChannel.open(localAddress);
+            SocketChannel channel = SocketChannel.open();
+            channel.socket().setSoTimeout(10_000);
+            channel.connect(localAddress);
+
             PacketSerializer.writeHelloMessage(channel, remoteAddress);
         });
 
@@ -230,6 +237,7 @@ class MeshMonitorTest {
 
         // When
         ServerSocketChannel serverSocket = ServerSocketChannel.open();
+        serverSocket.socket().setSoTimeout(10_000);
         serverSocket.bind(remoteAddress);
         Executors.newFixedThreadPool(1).submit(serverSocket::accept);
 

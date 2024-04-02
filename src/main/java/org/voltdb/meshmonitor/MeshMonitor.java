@@ -7,6 +7,9 @@
  */
 package org.voltdb.meshmonitor;
 
+import org.voltdb.meshmonitor.serdes.IpPortSerializer;
+import org.voltdb.meshmonitor.serdes.PacketSerializer;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -16,9 +19,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import org.voltdb.meshmonitor.serdes.IpPortSerializer;
-import org.voltdb.meshmonitor.serdes.PacketSerializer;
 
 public class MeshMonitor {
 
@@ -62,6 +62,7 @@ public class MeshMonitor {
 
         try {
             serverSocketChannel = ServerSocketChannel.open();
+            serverSocketChannel.socket().setSoTimeout(10_000);
             serverSocketChannel.socket().bind(bindAddress);
         } catch (IOException e) {
             consoleLogger.fatalError("Error while opening server socket", e);
@@ -117,7 +118,9 @@ public class MeshMonitor {
     private void connectTo(InetSocketAddress remoteId) {
         consoleLogger.warn(remoteId, "Connecting");
         try {
-            SocketChannel channel = SocketChannel.open(remoteId);
+            SocketChannel channel = SocketChannel.open();
+            channel.socket().setSoTimeout(10_000);
+            channel.connect(remoteId);
             consoleLogger.log(remoteId, "Connected");
             PacketSerializer.writeHelloMessage(channel, bindAddress);
             consoleLogger.log(remoteId, "Handshake sent");
