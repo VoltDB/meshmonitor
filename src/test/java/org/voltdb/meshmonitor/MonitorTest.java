@@ -233,10 +233,12 @@ public class MonitorTest {
         IOUtils.closeQuietly(connectionToNodeB);
 
         // Then
-        await().atMost(Durations.TEN_MINUTES).until(() -> !monitor1.isRunning());
+        await().atMost(Durations.TEN_MINUTES).untilAsserted(() -> {
+            assertThat(monitor1.isRunning()).isFalse();
 
-        // Invoked by both sending and receiving thread
-        verify(meshMonitor1, times(2)).onDisconnect(eq(nodeB), any());
+            // Invoked by both sending and receiving thread
+            verify(meshMonitor1, times(2)).onDisconnect(eq(nodeB), any());
+        });
     }
 
     public static InetSocketAddress address(String hostname, int port) {
