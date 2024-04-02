@@ -84,6 +84,7 @@ public class Monitor {
                     timings.pingReceived(now, lastRecvTime, timestampFromRemoteHost, TimeUnit.NANOSECONDS.toMicros(pingInterval.toNanos()));
                     lastRecvTime = now;
                 }
+                System.out.println("ReceiveThread Exiting");
             } catch (IOException e) {
                 isRunning = false;
                 meshMonitor.onDisconnect(remoteId, e);
@@ -113,6 +114,7 @@ public class Monitor {
                     timings.trackWakeupJitter(now - lastRunTime, TimeUnit.NANOSECONDS.toMicros(pingInterval.toNanos()));
                     lastRunTime = now;
                 }
+                System.out.println("SendThread Exiting");
             } catch (IOException e) {
                 isRunning = false;
                 meshMonitor.onDisconnect(remoteId, e);
