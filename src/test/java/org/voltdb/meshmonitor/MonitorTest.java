@@ -9,6 +9,8 @@ package org.voltdb.meshmonitor;
 
 import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.com.google.common.util.concurrent.Futures;
+import org.testcontainers.shaded.com.google.common.util.concurrent.Uninterruptibles;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -204,6 +206,7 @@ public class MonitorTest {
         Future<SocketChannel> nodeAConnection = Executors.newFixedThreadPool(1).submit(nodeBChannel::accept);
 
         SocketChannel connectionToNodeB = SocketChannel.open(nodeB);
+        Futures.getUnchecked(nodeAConnection);
 
         MeshMonitor meshMonitor1 = mock(MeshMonitor.class);
         MeshMonitor meshMonitor2 = mock(MeshMonitor.class);
@@ -233,7 +236,7 @@ public class MonitorTest {
         IOUtils.closeQuietly(connectionToNodeB);
 
         // Then
-        await().atMost(Durations.TEN_MINUTES).untilAsserted(() -> {
+        await().atMost(Durations.TEN_SECONDS).untilAsserted(() -> {
             assertThat(monitor1.isRunning()).isFalse();
 
             // Invoked by both sending and receiving thread
