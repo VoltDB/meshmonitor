@@ -138,11 +138,9 @@ class SimplePrometheusMetricsServerTest {
     @NotNull
     private static Monitor createMonitorWithTimings(String host, long... values) {
         MeshMonitorTimings timings = MeshMonitorTimings.createDefault(LOGGER);
-        Arrays.stream(values).forEach(value -> {
-            timings.receiveHistogram()
-                    // make it simple to reason for assertions so expectedIntervalBetweenValueSamples is the same as value.
-                    .recordValueWithExpectedInterval(value, value);
-        });
+        Arrays.stream(values).forEach(value -> timings.receiveHistogram()
+                // make it simple to reason for assertions so expectedIntervalBetweenValueSamples is the same as value.
+                .recordValueWithExpectedInterval(value, value));
 
         Monitor monitor1 = mock(Monitor.class);
         when(monitor1.getTimings()).thenReturn(timings);
