@@ -87,6 +87,7 @@ public class Monitor {
                 }
                 System.out.println("ReceiveThread Exiting");
             } catch (IOException e) {
+                System.out.println("ReceiveThread error");
                 e.printStackTrace();
                 isRunning = false;
                 meshMonitor.onDisconnect(remoteId, e);
@@ -118,6 +119,7 @@ public class Monitor {
                 }
                 System.out.println("SendThread Exiting");
             } catch (IOException e) {
+                System.out.println("SendThread error");
                 e.printStackTrace();
                 isRunning = false;
                 receiveThread.interrupt();
