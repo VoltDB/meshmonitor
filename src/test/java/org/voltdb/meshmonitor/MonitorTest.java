@@ -197,7 +197,7 @@ public class MonitorTest {
     }
 
     @Test
-    void shouldReportDisconnect() throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    void shouldReportDisconnect() throws IOException {
         // Given
         ConsoleLogger logger = ConsoleLoggerTest.loggerForTest();
         MeshMonitorTimings timings = MeshMonitorTimings.createDefault(logger);
@@ -205,12 +205,12 @@ public class MonitorTest {
         InetSocketAddress nodeB = address("127.0.0.1");
 
         ServerSocketChannel nodeBChannel = ServerSocketChannel.open();
-        nodeBChannel.socket().setSoTimeout(10_000);
+        nodeBChannel.socket().setSoTimeout(1_000);
         nodeBChannel.socket().bind(nodeB);
         Future<SocketChannel> nodeAConnection = Executors.newFixedThreadPool(1).submit(nodeBChannel::accept);
 
         SocketChannel connectionToNodeB = SocketChannel.open();
-        connectionToNodeB.socket().setSoTimeout(10_000);
+        connectionToNodeB.socket().setSoTimeout(1_000);
         connectionToNodeB.connect(nodeB);
         Futures.getUnchecked(nodeAConnection);
 
