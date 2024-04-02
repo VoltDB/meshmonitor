@@ -9,6 +9,7 @@ package org.voltdb.meshmonitor;
 
 import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -228,8 +229,8 @@ public class MonitorTest {
         monitor1.start();
 
         nodeAConnection.get(5, TimeUnit.SECONDS);
-        nodeBChannel.close();
-        connectionToNodeB.close();
+        IOUtils.closeQuietly(nodeBChannel);
+        IOUtils.closeQuietly(connectionToNodeB);
 
         // Then
         await().atMost(Durations.TEN_MINUTES).until(() -> !monitor1.isRunning());
