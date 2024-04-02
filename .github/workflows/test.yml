@@ -18,7 +18,7 @@ jobs:
       - name: Run tests in docker container
         run: |
           mkdir target
-          DOCKER_BUILDKIT=1 docker buildx build --output type=tar,dest=./target/docker.image.tar --platform=linux/arm64,linux/amd64 -f docker/meshmonitor-native-image.dockerfile .
+          DOCKER_BUILDKIT=1 docker buildx build --output type=tar,dest=./target/docker.image.tar --platform=linux/arm64,linux/amd64 -f docker/meshmonitor-native-image.tests.dockerfile .
           
           cd target
           tar -xf docker.image.tar linux_amd64/target/surefire-reports
