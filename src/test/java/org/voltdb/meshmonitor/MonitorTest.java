@@ -26,7 +26,7 @@ import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class MonitorTest {
+public class MonitorTest {
 
     private static final InetSocketAddress REMOTE_ID_1 = address("10.1.0.2", 8080);
 
