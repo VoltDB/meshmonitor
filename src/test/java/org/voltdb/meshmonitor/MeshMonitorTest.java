@@ -133,9 +133,8 @@ class MeshMonitorTest {
         });
 
         // Then
-        await().atMost(Durations.TEN_SECONDS).untilAsserted(() -> {
-            assertThat(serverManager.getConnections()).containsExactlyElementsOf(addresses);
-        });
+        await().atMost(Durations.TEN_SECONDS).untilAsserted(() ->
+                assertThat(serverManager.getConnections()).containsExactlyElementsOf(addresses));
     }
 
     @Test
@@ -172,9 +171,8 @@ class MeshMonitorTest {
         PacketSerializer.writeHelloMessage(channel, remoteAddress);
 
         // Then
-        await().atMost(Durations.TEN_MINUTES).untilAsserted(() -> {
-            assertThat(serverManager.getConnections()).containsOnly(remoteAddress);
-        });
+        await().atMost(Durations.TEN_MINUTES).untilAsserted(() ->
+                assertThat(serverManager.getConnections()).containsOnly(remoteAddress));
     }
 
     @Test

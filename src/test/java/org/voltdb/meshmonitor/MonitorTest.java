@@ -10,7 +10,6 @@ package org.voltdb.meshmonitor;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.google.common.util.concurrent.Futures;
-import org.testcontainers.shaded.com.google.common.util.concurrent.Uninterruptibles;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
