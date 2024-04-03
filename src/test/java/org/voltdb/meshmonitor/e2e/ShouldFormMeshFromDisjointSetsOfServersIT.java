@@ -17,14 +17,14 @@ public class ShouldFormMeshFromDisjointSetsOfServersIT extends ContainerTestBase
 
     @Test
     void shouldSetupMeshAndWorkEvenWhenMainNodeStartsLast() {
-        meshmonitor0.withCommand("/home/meshmonitor/meshmonitor.sh",
+        meshmonitor0.withCommand("/home/meshmonitor/meshmonitor",
                 "-m",
                 "192.168.0.2:12223",
                 "-b",
                 "192.168.0.2:12222"
         ).start();
 
-        meshmonitor1.withCommand("/home/meshmonitor/meshmonitor.sh",
+        meshmonitor1.withCommand("/home/meshmonitor/meshmonitor",
                 "-m",
                 "192.168.0.3:12223",
                 "-b",
@@ -32,7 +32,7 @@ public class ShouldFormMeshFromDisjointSetsOfServersIT extends ContainerTestBase
                 "192.168.0.2"
         ).start();
 
-        meshmonitor2.withCommand("/home/meshmonitor/meshmonitor.sh",
+        meshmonitor2.withCommand("/home/meshmonitor/meshmonitor",
                 "-m",
                 "192.168.0.4:12223",
                 "-b",

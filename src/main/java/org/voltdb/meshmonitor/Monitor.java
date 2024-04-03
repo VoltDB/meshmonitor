@@ -7,6 +7,8 @@
  */
 package org.voltdb.meshmonitor;
 
+import org.voltdb.meshmonitor.serdes.PacketSerializer;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
@@ -15,8 +17,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import org.voltdb.meshmonitor.serdes.PacketSerializer;
 
 public class Monitor {
 

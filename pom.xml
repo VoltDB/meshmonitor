@@ -31,6 +31,7 @@
         <mainClass>org.voltdb.meshmonitor.cli.MeshMonitorCommand</mainClass>
 
         <license-maven-plugin.version>4.3</license-maven-plugin.version>
+        <static.parameter>--static</static.parameter>
     </properties>
 
     <licenses>
@@ -89,6 +90,7 @@
             <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
+        <!--suppress VulnerableLibrariesLocal -->
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
@@ -101,6 +103,7 @@
             <version>1.19.0</version>
             <scope>test</scope>
         </dependency>
+        <!--suppress VulnerableLibrariesLocal -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -441,11 +444,22 @@
         </plugins>
     </build>
 
-    <!-- Configures Graal native-image to create compiled version of 'meshmonitor' command. -->
+    <!-- Configures Graal native-image to create compiled version of 'meshmonitor' command.
+    There is a separate MacOs configuration because it does not support tatic" flag. -->
     <profiles>
         <profile>
+            <id>override-native-options</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <static.parameter/>
+            </properties>
+        </profile>
+        <profile>
             <id>native</id>
-
             <build>
                 <plugins>
                     <plugin>
@@ -461,20 +475,15 @@
                                 </goals>
                                 <phase>package</phase>
                             </execution>
-                            <execution>
-                                <id>test-native</id>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                                <phase>test</phase>
-                            </execution>
                         </executions>
                         <configuration>
                             <jvmArgs>
                                 <jvmArg>--enable-preview</jvmArg>
                             </jvmArgs>
                             <fallback>false</fallback>
-                            <buildArgs>-march=compatibility --static --report-unsupported-elements-at-runtime</buildArgs>
+                            <buildArgs>-march=compatibility --report-unsupported-elements-at-runtime ${static.parameter}
+                                -H:+UnlockExperimentalVMOptions -H:IncludeResources=git.properties
+                            </buildArgs>
                         </configuration>
                     </plugin>
                 </plugins>

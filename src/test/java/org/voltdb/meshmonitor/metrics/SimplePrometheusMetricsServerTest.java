@@ -7,6 +7,7 @@
  */
 package org.voltdb.meshmonitor.metrics;
 
+import io.restassured.RestAssured;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,12 +35,16 @@ class SimplePrometheusMetricsServerTest {
 
     @BeforeAll
     static void setUp() {
+        InetSocketAddress address = MonitorTest.address("0.0.0.0");
+
         serverManager = mock(ServerManager.class);
         server = new SimplePrometheusMetricsServer(
                 LOGGER,
-                new InetSocketAddress(8080),
+                address,
                 serverManager);
         server.start();
+
+        RestAssured.port = address.getPort();
     }
 
     @AfterAll
@@ -133,11 +138,9 @@ class SimplePrometheusMetricsServerTest {
     @NotNull
     private static Monitor createMonitorWithTimings(String host, long... values) {
         MeshMonitorTimings timings = MeshMonitorTimings.createDefault(LOGGER);
-        Arrays.stream(values).forEach(value -> {
-            timings.receiveHistogram()
-                    // make it simple to reason for assertions so expectedIntervalBetweenValueSamples is the same as value.
-                    .recordValueWithExpectedInterval(value, value);
-        });
+        Arrays.stream(values).forEach(value -> timings.receiveHistogram()
+                // make it simple to reason for assertions so expectedIntervalBetweenValueSamples is the same as value.
+                .recordValueWithExpectedInterval(value, value));
 
         Monitor monitor1 = mock(Monitor.class);
         when(monitor1.getTimings()).thenReturn(timings);
