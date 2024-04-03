@@ -171,7 +171,7 @@ class MeshMonitorTest {
         PacketSerializer.writeHelloMessage(channel, remoteAddress);
 
         // Then
-        await().atMost(Durations.TEN_MINUTES).untilAsserted(() ->
+        await().atMost(Durations.TEN_SECONDS).untilAsserted(() ->
                 assertThat(serverManager.getConnections()).containsOnly(remoteAddress));
     }
 
