@@ -7,6 +7,8 @@
  */
 package org.voltdb.meshmonitor;
 
+import org.voltdb.meshmonitor.serdes.PacketSerializer;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
@@ -15,8 +17,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import org.voltdb.meshmonitor.serdes.PacketSerializer;
 
 public class Monitor {
 
@@ -31,7 +31,6 @@ public class Monitor {
     private final Duration pingInterval;
 
     private volatile boolean isRunning;
-    private ReceiveThread receiveThread;
 
     public Monitor(ConsoleLogger logger,
                    MeshMonitor meshMonitor,
@@ -52,7 +51,7 @@ public class Monitor {
 
         SendThread sendThread = new SendThread(channel);
         sendThread.start();
-        receiveThread = new ReceiveThread(channel);
+        ReceiveThread receiveThread = new ReceiveThread(channel);
         receiveThread.start();
     }
 
@@ -85,10 +84,7 @@ public class Monitor {
                     timings.pingReceived(now, lastRecvTime, timestampFromRemoteHost, TimeUnit.NANOSECONDS.toMicros(pingInterval.toNanos()));
                     lastRecvTime = now;
                 }
-                System.out.println("ReceiveThread Exiting");
             } catch (IOException e) {
-                System.out.println("ReceiveThread error");
-                e.printStackTrace();
                 isRunning = false;
                 meshMonitor.onDisconnect(remoteId, e);
             }
@@ -117,12 +113,8 @@ public class Monitor {
                     timings.trackWakeupJitter(now - lastRunTime, TimeUnit.NANOSECONDS.toMicros(pingInterval.toNanos()));
                     lastRunTime = now;
                 }
-                System.out.println("SendThread Exiting");
             } catch (IOException e) {
-                System.out.println("SendThread error");
-                e.printStackTrace();
                 isRunning = false;
-                receiveThread.interrupt();
                 meshMonitor.onDisconnect(remoteId, e);
             }
         }

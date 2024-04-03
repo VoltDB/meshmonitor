@@ -62,7 +62,6 @@ public class MeshMonitor {
 
         try {
             serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.socket().setSoTimeout(10_000);
             serverSocketChannel.socket().bind(bindAddress);
         } catch (IOException e) {
             consoleLogger.fatalError("Error while opening server socket", e);
@@ -118,9 +117,7 @@ public class MeshMonitor {
     private void connectTo(InetSocketAddress remoteId) {
         consoleLogger.warn(remoteId, "Connecting");
         try {
-            SocketChannel channel = SocketChannel.open();
-            channel.socket().setSoTimeout(10_000);
-            channel.connect(remoteId);
+            SocketChannel channel = SocketChannel.open(remoteId);
             consoleLogger.log(remoteId, "Connected");
             PacketSerializer.writeHelloMessage(channel, bindAddress);
             consoleLogger.log(remoteId, "Handshake sent");
