@@ -21,39 +21,39 @@
 Meshmonitor is a tool for monitoring network issues such as network delays and instability, mysterious timeouts, hangs,
 and scheduling problems that delay message passing.
 
-While it can be used as a general network monitoring tool it simulates the VoltDB heartbeat paths and is intended to
+While it can be used as a general network monitoring tool it simulates the Volt heartbeat paths and is intended to
 diagnose situations when sites are experiencing dead host timeouts without any obvious network event.
 
-Meshmonitor can be run alongside VoltDB. It has very low overhead on the CPUs and network. It can also be helpful to run
-without VoltDB - as a proof point that your environment is going to have adequate baseline stability for running VoltDB.
+Meshmonitor can be run alongside Volt. It has very low overhead on the CPUs and network. It can also be helpful to run
+without Volt - as a proof point that your environment is going to have adequate baseline stability for running Volt.
 
 ## What Meshmonitor Can (and Can't) Tell You
 
-First - an analogy. Think of VoltDB as a fast car. Like all cars, the quality of the streets impacts the top speed at
+First - an analogy. Think of Volt as a fast car. Like all cars, the quality of the streets impacts the top speed at
 which you can travel. If the streets you drive on are poorly paved, have random lane closings, or a lot of traffic
 lights then your fast car goes no faster than any old jalopy.
 
-Environmental blips in scheduling, networking, CPU accesses are like potholes to VoltDB. If a VoltDB site thread can't
+Environmental blips in scheduling, networking, CPU accesses are like potholes to Volt. If a Volt site thread can't
 run for 50ms - then your application can experience long-tail latency problems. If the heart beating between cluster
 nodes is delayed for long enough, then some nodes may get ejected from the cluster.
 
-The following is an ever-growing list of things that the VoltDB support team has seen when looking at customers' Mesh
+The following is an ever-growing list of things that the Volt support team has seen when looking at customers' Mesh
 Monitor data:
 
 1. Batch network copies/backups that are doing a high IO load that linux decides is more important than scheduling
-   VoltDB (a solution is to throttle these jobs)
+   Volt (a solution is to throttle these jobs)
 2. Other processes on the system taking too much CPU
 3. VMs/Containers that are starved by neighbors
 4. VMs/Containers with incorrect/inadequate thread pinning
 5. VM/Containers that are migrating
 6. Power save modes that slow down "idle" processors
 7. Boot/grub kernel setting of idle=poll
-8. Network congestion between particular nodes
+8. Network congestion between particular nodes/pods
 
 Causes of latency/timeouts that are not visible using meshmonitor (but may be visible in volt.log):
 
 1. GC stalls
-2. VoltDB memory compaction delays
+2. Volt memory compaction delays (for versions prior to V12.0)
 
 # What Meshmonitor does
 
