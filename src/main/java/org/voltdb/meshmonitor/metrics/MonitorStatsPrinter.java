@@ -7,10 +7,10 @@
  */
 package org.voltdb.meshmonitor.metrics;
 
-import java.net.InetSocketAddress;
-
 import org.voltdb.meshmonitor.MeshMonitorTimings;
 import org.voltdb.meshmonitor.Monitor;
+
+import java.net.InetSocketAddress;
 
 public class MonitorStatsPrinter {
 
@@ -24,19 +24,25 @@ public class MonitorStatsPrinter {
         MeshMonitorTimings timings = monitor.getTimings();
         InetSocketAddress remoteId = monitor.getRemoteId();
 
-        histogramPrinter.printHistogram(output,
-                timings.receiveHistogram().getCumulativeHistogram(),
-                remoteId,
-                "receive_seconds");
+        timings.receiveHistogram().getCumulativeHistogram(histogram ->
+                histogramPrinter.printHistogram(output,
+                        histogram,
+                        remoteId,
+                        "receive_seconds")
+        );
 
-        histogramPrinter.printHistogram(output,
-                timings.deltaHistogram().getCumulativeHistogram(),
-                remoteId,
-                "delta_seconds");
+        timings.deltaHistogram().getCumulativeHistogram(histogram ->
+                histogramPrinter.printHistogram(output,
+                        histogram,
+                        remoteId,
+                        "delta_seconds")
+        );
 
-        histogramPrinter.printHistogram(output,
-                timings.sendHistogram().getCumulativeHistogram(),
-                remoteId,
-                "send_seconds");
+        timings.sendHistogram().getCumulativeHistogram(histogram -> {
+            histogramPrinter.printHistogram(output,
+                    histogram,
+                    remoteId,
+                    "send_seconds");
+        });
     }
 }
