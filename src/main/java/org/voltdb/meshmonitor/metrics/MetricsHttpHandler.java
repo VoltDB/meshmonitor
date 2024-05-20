@@ -7,23 +7,25 @@
  */
 package org.voltdb.meshmonitor.metrics;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import org.voltdb.meshmonitor.ServerManager;
-
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.voltdb.meshmonitor.ConsoleLogger;
+import org.voltdb.meshmonitor.ServerManager;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 class MetricsHttpHandler implements HttpHandler {
 
     private static final String SUPPORTED_HTTP_METHOD = "GET";
     private static final String PATH = "/metrics";
 
+    private final ConsoleLogger logger;
     private final MonitorStatsPrinter monitorStatsPrinter;
     private final ServerManager serverManager;
 
-    public MetricsHttpHandler(String hostName, ServerManager serverManager) {
+    public MetricsHttpHandler(ConsoleLogger logger, String hostName, ServerManager serverManager) {
+        this.logger = logger;
         this.monitorStatsPrinter = new MonitorStatsPrinter(hostName);
         this.serverManager = serverManager;
     }
@@ -38,8 +40,7 @@ class MetricsHttpHandler implements HttpHandler {
         String path = httpExchange.getRequestURI().getPath();
         if (PATH.equals(path)) {
             handleGetRequest(httpExchange);
-        }
-        else {
+        } else {
             replyWith404(httpExchange);
         }
     }
@@ -50,7 +51,6 @@ class MetricsHttpHandler implements HttpHandler {
 
     private void handleGetRequest(HttpExchange httpExchange) throws IOException {
         try (OutputStream outputStream = httpExchange.getResponseBody()) {
-
             StringBuilder output = new StringBuilder();
             serverManager.getMonitors().forEach(monitor -> monitorStatsPrinter.print(output, monitor));
 
@@ -58,6 +58,8 @@ class MetricsHttpHandler implements HttpHandler {
             httpExchange.sendResponseHeaders(200, prometheusResponse.length());
 
             outputStream.write(prometheusResponse.getBytes());
+        } catch (Exception e) {
+            logger.log("Error while generating Prometheus response", e);
         }
     }
 }

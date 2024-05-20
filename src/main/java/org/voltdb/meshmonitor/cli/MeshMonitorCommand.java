@@ -11,6 +11,7 @@ import org.voltdb.meshmonitor.*;
 import org.voltdb.meshmonitor.metrics.SimplePrometheusMetricsServer;
 import picocli.CommandLine;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -137,12 +138,18 @@ public class MeshMonitorCommand implements Callable<Integer> {
                 minHiccupSizeMilliseconds);
 
         if (!disableMetrics) {
-            SimplePrometheusMetricsServer server = new SimplePrometheusMetricsServer(
-                    new ConsoleLogger(spec.commandLine().getOut(), enableDebugLogging),
-                    metricsBindAddress,
-                    serverManager);
+            try {
+                SimplePrometheusMetricsServer server = new SimplePrometheusMetricsServer(
+                        new ConsoleLogger(spec.commandLine().getOut(), enableDebugLogging),
+                        metricsBindAddress,
+                        bindAddress.getHostName(),
+                        serverManager);
 
-            server.start();
+                server.start();
+            } catch (IOException e) {
+                consoleLogger.fatalError("Error starting metrics endpoint", e);
+                return MeshMonitor.PROGRAM_ERROR_RESULT;
+            }
         }
 
         return meshMonitor.start(!quiet);

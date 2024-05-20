@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.voltdb.meshmonitor.*;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.List;
@@ -34,14 +35,16 @@ class SimplePrometheusMetricsServerTest {
     private static ServerManager serverManager;
 
     @BeforeAll
-    static void setUp() {
+    static void setUp() throws IOException {
         InetSocketAddress address = MonitorTest.address("0.0.0.0");
 
         serverManager = mock(ServerManager.class);
         server = new SimplePrometheusMetricsServer(
                 LOGGER,
                 address,
-                serverManager);
+                "my.book.pro",
+                serverManager
+        );
         server.start();
 
         RestAssured.port = address.getPort();
@@ -105,9 +108,9 @@ class SimplePrometheusMetricsServerTest {
                 .then()
                 .statusCode(200)
                 .body(
-                        containsString("meshmonitor_receive_seconds_bucket{host_name=\"0_0_0_0\",remote_host_name=\"remote_host_com\",le=\"0.005000\"} 1"),
-                        containsString("meshmonitor_delta_seconds_sum{host_name=\"0_0_0_0\",remote_host_name=\"remote_host_com\",} 0"),
-                        containsString("meshmonitor_send_seconds_sum{host_name=\"0_0_0_0\",remote_host_name=\"remote_host_com\",} 0")
+                        containsString("meshmonitor_receive_seconds_bucket{host_name=\"my_book_pro\",remote_host_name=\"remote_host_com\",le=\"0.005000\"} 1"),
+                        containsString("meshmonitor_delta_seconds_sum{host_name=\"my_book_pro\",remote_host_name=\"remote_host_com\",} 0"),
+                        containsString("meshmonitor_send_seconds_sum{host_name=\"my_book_pro\",remote_host_name=\"remote_host_com\",} 0")
                 );
     }
 
@@ -124,14 +127,14 @@ class SimplePrometheusMetricsServerTest {
                 .then()
                 .statusCode(200)
                 .body(
-                        containsString("meshmonitor_receive_seconds_bucket{host_name=\"0_0_0_0\",remote_host_name=\"remote_host_com\",le=\"0.005000\"} 1"),
-                        containsString("meshmonitor_delta_seconds_sum{host_name=\"0_0_0_0\",remote_host_name=\"remote_host_com\",} 0"),
-                        containsString("meshmonitor_send_seconds_sum{host_name=\"0_0_0_0\",remote_host_name=\"remote_host_com\",} 0"),
+                        containsString("meshmonitor_receive_seconds_bucket{host_name=\"my_book_pro\",remote_host_name=\"remote_host_com\",le=\"0.005000\"} 1"),
+                        containsString("meshmonitor_delta_seconds_sum{host_name=\"my_book_pro\",remote_host_name=\"remote_host_com\",} 0"),
+                        containsString("meshmonitor_send_seconds_sum{host_name=\"my_book_pro\",remote_host_name=\"remote_host_com\",} 0"),
 
-                        containsString("meshmonitor_receive_seconds_bucket{host_name=\"0_0_0_0\",remote_host_name=\"other_host_com\",le=\"0.005000\"} 0"),
-                        containsString("meshmonitor_receive_seconds_bucket{host_name=\"0_0_0_0\",remote_host_name=\"other_host_com\",le=\"0.050000\"} 1"),
-                        containsString("meshmonitor_delta_seconds_sum{host_name=\"0_0_0_0\",remote_host_name=\"other_host_com\",} 0"),
-                        containsString("meshmonitor_send_seconds_sum{host_name=\"0_0_0_0\",remote_host_name=\"other_host_com\",} 0")
+                        containsString("meshmonitor_receive_seconds_bucket{host_name=\"my_book_pro\",remote_host_name=\"other_host_com\",le=\"0.005000\"} 0"),
+                        containsString("meshmonitor_receive_seconds_bucket{host_name=\"my_book_pro\",remote_host_name=\"other_host_com\",le=\"0.050000\"} 1"),
+                        containsString("meshmonitor_delta_seconds_sum{host_name=\"my_book_pro\",remote_host_name=\"other_host_com\",} 0"),
+                        containsString("meshmonitor_send_seconds_sum{host_name=\"my_book_pro\",remote_host_name=\"other_host_com\",} 0")
                 );
     }
 

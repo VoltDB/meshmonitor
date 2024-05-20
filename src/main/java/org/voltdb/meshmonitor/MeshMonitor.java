@@ -11,6 +11,7 @@ import org.voltdb.meshmonitor.serdes.IpPortSerializer;
 import org.voltdb.meshmonitor.serdes.PacketSerializer;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
@@ -22,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MeshMonitor {
 
-    private static final int PROGRAM_ERROR_RESULT = 1;
-    private static final int PROGRAM_SUCCESS_RESULT = 0;
+    public static final int PROGRAM_ERROR_RESULT = 1;
+    public static final int PROGRAM_SUCCESS_RESULT = 0;
 
     private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor(
             runnable -> {
@@ -63,6 +64,9 @@ public class MeshMonitor {
         try {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.socket().bind(bindAddress);
+        } catch (BindException e) {
+            consoleLogger.fatalError(bindAddress.toString(), e);
+            return PROGRAM_ERROR_RESULT;
         } catch (IOException e) {
             consoleLogger.fatalError("Error while opening server socket", e);
             return PROGRAM_ERROR_RESULT;
