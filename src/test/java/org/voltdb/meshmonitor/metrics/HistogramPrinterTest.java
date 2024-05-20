@@ -7,7 +7,6 @@
  */
 package org.voltdb.meshmonitor.metrics;
 
-import org.HdrHistogram.SynchronizedHistogram;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.voltdb.meshmonitor.ConsoleLoggerTest;
@@ -20,25 +19,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HistogramPrinterTest {
 
     private static final InetSocketAddress REMOTE_ID = new InetSocketAddress("remote.host.com", 8080);
-    private SynchronizedHistogram histogram;
+
+    private MeshMonitorTimings meshMonitorTimings;
 
     @BeforeEach
     void setUp() {
-        histogram = MeshMonitorTimings.createDefault(ConsoleLoggerTest.loggerForTest())
-                .deltaHistogram()
-                .getCumulativeHistogram();
+        meshMonitorTimings = MeshMonitorTimings.createDefault(ConsoleLoggerTest.loggerForTest());
     }
 
     @Test
     public void shouldPrintBasicHistogram() {
         // Given
-        histogram.recordValue(42L);
+        meshMonitorTimings
+                .deltaHistogram()
+                .recordValueWithExpectedInterval(42L, 42L);
 
         HistogramPrinter printer = new HistogramPrinter("host_name");
         StringBuilder actual = new StringBuilder();
 
         // When
-        printer.printHistogram(actual, histogram, REMOTE_ID, "empty_histogram");
+        meshMonitorTimings
+                .deltaHistogram()
+                .getCumulativeHistogram(histogram ->
+                        printer.printHistogram(actual, histogram, REMOTE_ID, "empty_histogram")
+                );
 
         // Then
         String result = actual.toString();
@@ -52,15 +56,27 @@ public class HistogramPrinterTest {
     @Test
     public void shouldFormatCumulativeBuckets() {
         // Given
-        histogram.recordValue(42L);
-        histogram.recordValue(420L);
-        histogram.recordValue(4200L);
+        meshMonitorTimings
+                .deltaHistogram()
+                .recordValueWithExpectedInterval(42L, 42L);
+
+        meshMonitorTimings
+                .deltaHistogram()
+                .recordValueWithExpectedInterval(420L, 420L);
+
+        meshMonitorTimings
+                .deltaHistogram()
+                .recordValueWithExpectedInterval(4200L, 4200L);
 
         HistogramPrinter printer = new HistogramPrinter("host_name");
         StringBuilder actual = new StringBuilder();
 
         // When
-        printer.printHistogram(actual, histogram, REMOTE_ID, "histogram");
+        meshMonitorTimings
+                .deltaHistogram()
+                .getCumulativeHistogram(histogram ->
+                        printer.printHistogram(actual, histogram, REMOTE_ID, "histogram")
+                );
 
         // Then
         String result = actual.toString();

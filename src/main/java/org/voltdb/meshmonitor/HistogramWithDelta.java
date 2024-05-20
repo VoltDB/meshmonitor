@@ -9,6 +9,8 @@ package org.voltdb.meshmonitor;
 
 import org.HdrHistogram.SynchronizedHistogram;
 
+import java.util.function.Consumer;
+
 public class HistogramWithDelta {
 
     private final ConsoleLogger logger;
@@ -34,7 +36,14 @@ public class HistogramWithDelta {
         }
     }
 
-    public SynchronizedHistogram getCumulativeHistogram() {
+    public void getCumulativeHistogram(Consumer<SynchronizedHistogram> consumer) {
+        synchronized (histogram) {
+            consumer.accept(histogram);
+        }
+    }
+
+    // @VisibleForTesting
+    SynchronizedHistogram getCumulativeHistogram() {
         return histogram;
     }
 
