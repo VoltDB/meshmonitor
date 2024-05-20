@@ -12,37 +12,43 @@ import org.voltdb.meshmonitor.ConsoleLogger;
 import org.voltdb.meshmonitor.ServerManager;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
+import java.net.BindException;
 import java.net.InetSocketAddress;
 
 public class SimplePrometheusMetricsServer {
 
     private final ConsoleLogger logger;
+
     private final InetSocketAddress bindAddress;
+    private final String reportedHostName;
+
     private final ServerManager serverManager;
     private HttpServer server;
 
     public SimplePrometheusMetricsServer(
             ConsoleLogger logger,
             InetSocketAddress bindAddress,
+            String reportedHostName,
             ServerManager serverManager) {
         this.logger = logger;
         this.bindAddress = bindAddress;
+        this.reportedHostName = reportedHostName;
         this.serverManager = serverManager;
     }
 
-    public void start() {
+    public void start() throws IOException {
         try {
             server = HttpServer.create(bindAddress, 100);
-            server.createContext(
-                    "/metrics",
-                    new MetricsHttpHandler(bindAddress.getHostName(), serverManager));
-            server.start();
-
-            logger.log("HTTP server listening on http://%s/metrics", server.getAddress());
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+        } catch (BindException e) {
+            throw new IOException("Address " + bindAddress + " already in use", e);
         }
+
+        server.createContext(
+                "/metrics",
+                new MetricsHttpHandler(logger, reportedHostName, serverManager));
+        server.start();
+
+        logger.log("Prometheus endpoint available at http://%s/metrics", server.getAddress());
     }
 
     public void close() {
