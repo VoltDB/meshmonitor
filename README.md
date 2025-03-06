@@ -151,19 +151,18 @@ Meshmonitor processes include the list of all known nodes in the mesh in the "pi
 each node learns about all other nodes and a stable mesh is achieved after a few iterations of message exchange. The only
 requirement is that each new meshmonitor needs to connect to at least one other that is already connected to the mesh.
 
-The mesh is easy to create by simply starting all meshmonitor processes and specifying the IP address
-of one of the participating nodes as the first argument. For example:
+The mesh is easy to create by simply starting all meshmonitor processes using a bind address by specifying the local machine’s *external* IP address (e.g., 192.161.0.3) and providing the IP address of one of the participating nodes as the first argument. For example:
 
 ```shell
+# On the initial server (192.161.0.1), start meshmonitor with only the bind 
+# address or List of servers to maintain permanent connection to:
+$ ./meshmonitor -b 192.161.0.1
+
 # On server 192.161.0.2 start meshmonitor and ask it to join 192.161.0.1
-$ ./meshmonitor 192.161.0.1
+$ ./meshmonitor -b 192.161.0.2 192.161.0.1
 
 # On server 192.161.0.3 start meshmonitor and ask it to join 192.161.0.1
-$ ./meshmonitor 192.161.0.1
-
-# On server 192.161.0.1 start meshmonitor without arguments or with the 
-# same 192.161.0.1 argument if that's easier to script - it will be ignored
-$ ./meshmonitor 192.161.0.1
+$ ./meshmonitor -b 192.161.0.3 192.161.0.1
 ```
 
 The meshmonitor processes can be killed and restarted and the mesh will heal. If a node goes down it is forgotten and
@@ -233,3 +232,20 @@ java -jar meshmonitor.jar <ARGS>
 
 It requires at least Java 21 to run.
 
+## Building
+
+Java SDK is required to build and test the Meshmonitor. Version 21 or above. 
+Maven is used as a build system but does not need to be installed locally.  
+
+The `mvnw` script (or `mvnw.cmd` on Windows) is used to bootstrap the build
+and download required Maven runtime files. To build Meshmonitor and run all tests:
+
+```shell
+./mvnw clean install
+```
+
+to skip tests run:
+
+```shell
+./mvnw clean install -DskipTests
+```
