@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Volt Active Data Inc.
+ * Copyright (C) 2024-2025 Volt Active Data Inc.
  *
  * Use of this source code is governed by an MIT
  * license that can be found in the LICENSE file or at
@@ -48,7 +48,7 @@ public class SimplePrometheusMetricsServer {
                 new MetricsHttpHandler(logger, reportedHostName, serverManager));
         server.start();
 
-        logger.log("Prometheus endpoint available at http://%s/metrics", server.getAddress());
+        logger.log("Prometheus endpoint available at http:/%s/metrics", server.getAddress());
     }
 
     public void close() {

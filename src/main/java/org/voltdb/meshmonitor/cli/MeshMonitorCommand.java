@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Volt Active Data Inc.
+ * Copyright (C) 2024-2025 Volt Active Data Inc.
  *
  * Use of this source code is governed by an MIT
  * license that can be found in the LICENSE file or at
@@ -7,7 +7,11 @@
  */
 package org.voltdb.meshmonitor.cli;
 
-import org.voltdb.meshmonitor.*;
+import org.voltdb.meshmonitor.ConsoleLogger;
+import org.voltdb.meshmonitor.GitPropertiesVersionProvider;
+import org.voltdb.meshmonitor.MeshMonitor;
+import org.voltdb.meshmonitor.Monitor;
+import org.voltdb.meshmonitor.ServerManager;
 import org.voltdb.meshmonitor.metrics.SimplePrometheusMetricsServer;
 import picocli.CommandLine;
 
@@ -98,7 +102,7 @@ public class MeshMonitorCommand implements Callable<Integer> {
 
     @CommandLine.Parameters(
             arity = "0..*",
-            description = "List of servers to maintain permanent connection to",
+            description = "Whitespace separated list of servers to maintain permanent connection to, e.g. 192.168.0.1 192.168.0.2 1926.168.0.12",
             converter = InetSocketAddressConverter.class)
     private List<InetSocketAddress> servers = new ArrayList<>();
 
@@ -117,14 +121,14 @@ public class MeshMonitorCommand implements Callable<Integer> {
 
         System.out.println(
                 CommandLine.Help.Ansi.AUTO.string(
-                        STR."""
+                        """
                                 @|green      __  ___          __                          _ __           \s
                                     /  |/  /__  _____/ /_  ____ ___  ____  ____  (_) /_____  _____
                                    / /|_/ / _ \\/ ___/ __ \\/ __ `__ \\/ __ \\/ __ \\/ / __/ __ \\/ ___/
                                   / /  / /  __(__  ) / / / / / / / / /_/ / / / / / /_/ /_/ / /   \s
                                  /_/  /_/\\___/____/_/ /_/_/ /_/ /_/\\____/_/ /_/_/\\__/\\____/_/ \s
-                                 |@                            \{new GitPropertiesVersionProvider().getSimpleVersion()}
-                                 """));
+                                 |@                            %s
+                                """.formatted(new GitPropertiesVersionProvider().getSimpleVersion())));
 
         ConsoleLogger consoleLogger = new ConsoleLogger(spec.commandLine().getOut(), enableDebugLogging);
         ServerManager serverManager = new ServerManager(consoleLogger, Monitor::new, Duration.ofMillis(pingIntervalMilliseconds));

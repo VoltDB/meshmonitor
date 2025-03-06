@@ -25,11 +25,11 @@ jobs:
         with:
           entrypoint: asciidoctor
           args: README.adoc
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: README.pdf
           path: README.pdf
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: README.html
           path: README.html

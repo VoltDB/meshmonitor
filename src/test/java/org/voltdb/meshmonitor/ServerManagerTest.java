@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Volt Active Data Inc.
+ * Copyright (C) 2024-2025 Volt Active Data Inc.
  *
  * Use of this source code is governed by an MIT
  * license that can be found in the LICENSE file or at
@@ -14,7 +14,10 @@ import java.nio.channels.SocketChannel;
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.voltdb.meshmonitor.ConsoleLoggerTest.loggerForTest;
 
 class ServerManagerTest {
@@ -27,7 +30,7 @@ class ServerManagerTest {
     @Test
     void shouldCreateNewMonitorForNewConnection() {
         // Given
-        MonitorFactory monitorFactory = (_, _, _, _, _, remoteId) -> new FakeMonitor(remoteId);
+        MonitorFactory monitorFactory = (logger, meshMonitor, timings, pingInterval, channel, remoteId) -> new FakeMonitor(remoteId);
         ServerManager serverManager = new ServerManager(
                 loggerForTest(),
                 monitorFactory,
@@ -47,7 +50,7 @@ class ServerManagerTest {
     @Test
     void shouldNotCreateNewMonitorIfOneIsAlreadyPresent() {
         // Given
-        MonitorFactory monitorFactory = (_, _, _, _, _, remoteId) -> new FakeMonitor(remoteId);
+        MonitorFactory monitorFactory = (logger, meshMonitor, timings, pingInterval, channel, remoteId)  -> new FakeMonitor(remoteId);
         ServerManager serverManager = new ServerManager(
                 loggerForTest(),
                 monitorFactory,

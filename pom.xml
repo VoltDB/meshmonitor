@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (C) 2024 Volt Active Data Inc.
+    Copyright (C) 2024-2025 Volt Active Data Inc.
 
     Use of this source code is governed by an MIT
     license that can be found in the LICENSE file or at
@@ -190,7 +190,6 @@
                             <version>4.7.5</version>
                         </path>
                     </annotationProcessorPaths>
-                    <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
 
@@ -198,9 +197,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.2</version>
-                <configuration>
-                    <argLine>--enable-preview</argLine>
-                </configuration>
             </plugin>
 
             <plugin>
@@ -346,7 +342,6 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
-                                <argument>--enable-preview</argument>
                                 <argument>-Dpicocli.autocomplete.systemExitOnError</argument>
                                 <argument>-cp</argument>
                                 <classpath/>
@@ -477,9 +472,6 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <jvmArgs>
-                                <jvmArg>--enable-preview</jvmArg>
-                            </jvmArgs>
                             <fallback>false</fallback>
                             <buildArgs>-march=compatibility --report-unsupported-elements-at-runtime ${static.parameter}
                                 -H:+UnlockExperimentalVMOptions -H:IncludeResources=git.properties
