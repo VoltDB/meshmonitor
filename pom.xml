@@ -21,11 +21,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
-        <maven.compiler.testSource>21</maven.compiler.testSource>
-        <maven.compiler.testTarget>21</maven.compiler.testTarget>
+        <maven.compiler.testSource>17</maven.compiler.testSource>
+        <maven.compiler.testTarget>17</maven.compiler.testTarget>
 
         <imageName>meshmonitor</imageName>
         <mainClass>org.voltdb.meshmonitor.cli.MeshMonitorCommand</mainClass>
@@ -474,7 +474,7 @@
                         <configuration>
                             <fallback>false</fallback>
                             <buildArgs>-march=compatibility --report-unsupported-elements-at-runtime ${static.parameter}
-                                -H:+UnlockExperimentalVMOptions -H:IncludeResources=git.properties
+                                -H:IncludeResources=git.properties
                             </buildArgs>
                         </configuration>
                     </plugin>

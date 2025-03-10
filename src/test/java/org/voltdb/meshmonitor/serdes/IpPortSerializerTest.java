@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Volt Active Data Inc.
+ * Copyright (C) 2024-2025 Volt Active Data Inc.
  *
  * Use of this source code is governed by an MIT
  * license that can be found in the LICENSE file or at
@@ -86,7 +86,7 @@ class IpPortSerializerTest {
 
         // Then
         assertThat(serializeResult).isFalse();
-        assertThat(actual).containsOnly(addresses.getFirst());
+        assertThat(actual).containsOnly(addresses.get(0));
     }
 
     @Test
