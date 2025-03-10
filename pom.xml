@@ -474,7 +474,7 @@
                         <configuration>
                             <fallback>false</fallback>
                             <buildArgs>-march=compatibility --report-unsupported-elements-at-runtime ${static.parameter}
-                                -H:+UnlockExperimentalVMOptions -H:IncludeResources=git.properties
+                                -H:IncludeResources=git.properties
                             </buildArgs>
                         </configuration>
                     </plugin>

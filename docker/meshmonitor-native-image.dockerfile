@@ -7,10 +7,10 @@
 #
 
 # syntax=docker/dockerfile:1
-FROM --platform=$TARGETPLATFORM  ghcr.io/graalvm/native-image-community:21.0.2-ol9-20240116 AS GRAAL
+FROM --platform=$TARGETPLATFORM  ghcr.io/graalvm/native-image-community:17.0.9-ol9-20231024 AS GRAAL
 COPY . /home/meshmonitor
 WORKDIR /home/meshmonitor
-RUN MAVEN_OPTS=./mvnw -ntp clean package -Pnative
+RUN ./mvnw -ntp clean package -Pnative
 
 # This is a stage to build a meshmonitor image, previous one is a stage to source files from
 FROM --platform=$TARGETPLATFORM gcr.io/distroless/base-debian12
