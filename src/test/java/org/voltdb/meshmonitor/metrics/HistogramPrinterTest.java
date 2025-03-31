@@ -31,7 +31,7 @@ public class HistogramPrinterTest {
     public void shouldPrintBasicHistogram() {
         // Given
         meshMonitorTimings
-                .deltaHistogram()
+                .timestampDeltaHistogram()
                 .recordValueWithExpectedInterval(42L, 42L);
 
         HistogramPrinter printer = new HistogramPrinter("host_name");
@@ -39,7 +39,7 @@ public class HistogramPrinterTest {
 
         // When
         meshMonitorTimings
-                .deltaHistogram()
+                .timestampDeltaHistogram()
                 .getCumulativeHistogram(histogram ->
                         printer.printHistogram(actual, histogram, REMOTE_ID, "empty_histogram")
                 );
@@ -57,15 +57,15 @@ public class HistogramPrinterTest {
     public void shouldFormatCumulativeBuckets() {
         // Given
         meshMonitorTimings
-                .deltaHistogram()
+                .timestampDeltaHistogram()
                 .recordValueWithExpectedInterval(42L, 42L);
 
         meshMonitorTimings
-                .deltaHistogram()
+                .timestampDeltaHistogram()
                 .recordValueWithExpectedInterval(420L, 420L);
 
         meshMonitorTimings
-                .deltaHistogram()
+                .timestampDeltaHistogram()
                 .recordValueWithExpectedInterval(4200L, 4200L);
 
         HistogramPrinter printer = new HistogramPrinter("host_name");
@@ -73,7 +73,7 @@ public class HistogramPrinterTest {
 
         // When
         meshMonitorTimings
-                .deltaHistogram()
+                .timestampDeltaHistogram()
                 .getCumulativeHistogram(histogram ->
                         printer.printHistogram(actual, histogram, REMOTE_ID, "histogram")
                 );

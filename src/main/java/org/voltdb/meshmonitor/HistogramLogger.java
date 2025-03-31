@@ -25,11 +25,11 @@ public class HistogramLogger {
         MeshMonitorTimings currentTimings = monitor.getTimings();
         InetSocketAddress remoteId = monitor.getRemoteId();
 
-        String receive = printAndReset(currentTimings.receiveHistogram(), minHiccupSize);
-        String delta = printAndReset(currentTimings.deltaHistogram(), minHiccupSize);
-        String send = printAndReset(currentTimings.sendHistogram(), minHiccupSize);
+        String ping = printAndReset(currentTimings.pingHistogram(), minHiccupSize);
+        String jitter = printAndReset(currentTimings.jitterHistogram(), minHiccupSize);
+        String timestampDiff = printAndReset(currentTimings.timestampDeltaHistogram(), minHiccupSize);
 
-        consoleLogger.log(remoteId, receive + "|" + delta + "|" + send);
+        consoleLogger.log(remoteId, ping + "|" + jitter + "|" + timestampDiff);
     }
 
     private String printAndReset(HistogramWithDelta histogram, long minHiccupSize) {

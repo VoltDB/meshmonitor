@@ -15,30 +15,31 @@ public final class MeshMonitorTimings {
 
     public static final int NUMBER_OF_SIGNIFICANT_VALUE_DIGITS = 3;
     public static final long HIGHEST_TRACKABLE_VALUE = 24 * 60 * 60 * 1000 * 1000L;
-    private final HistogramWithDelta receiveHistogram;
-    private final HistogramWithDelta sendHistogram;
-    private final HistogramWithDelta deltaHistogram;
+
+    private final HistogramWithDelta pingHistogram;
+    private final HistogramWithDelta jitterHistogram;
+    private final HistogramWithDelta timestampDeltaHistogram;
 
     public MeshMonitorTimings(
-            HistogramWithDelta receiveHistogram,
-            HistogramWithDelta sendHistogram,
-            HistogramWithDelta deltaHistogram) {
-        this.receiveHistogram = receiveHistogram;
-        this.sendHistogram = sendHistogram;
-        this.deltaHistogram = deltaHistogram;
+            HistogramWithDelta pingHistogram,
+            HistogramWithDelta jitterHistogram,
+            HistogramWithDelta timestampDeltaHistogram) {
+        this.pingHistogram = pingHistogram;
+        this.jitterHistogram = jitterHistogram;
+        this.timestampDeltaHistogram = timestampDeltaHistogram;
     }
 
     public void pingReceived(long now, long lastReceiveTime, long timestampFromRemoteHost, long pingInterval) {
         long valueToRecord = now - lastReceiveTime;
-        receiveHistogram.recordValueWithExpectedInterval(valueToRecord, pingInterval);
+        pingHistogram.recordValueWithExpectedInterval(valueToRecord, pingInterval);
 
         // Abs because clocks can be slightly out of sync...
         valueToRecord = Math.abs(now - timestampFromRemoteHost);
-        deltaHistogram.recordValueWithExpectedInterval(valueToRecord, pingInterval);
+        timestampDeltaHistogram.recordValueWithExpectedInterval(valueToRecord, pingInterval);
     }
 
     public void trackWakeupJitter(long observedInterval, long expectedInterval) {
-        sendHistogram.recordValueWithExpectedInterval(observedInterval, expectedInterval);
+        jitterHistogram.recordValueWithExpectedInterval(observedInterval, expectedInterval);
     }
 
     private static SynchronizedHistogram defaultHistogram() {
@@ -47,22 +48,22 @@ public final class MeshMonitorTimings {
 
     public static MeshMonitorTimings createDefault(ConsoleLogger logger) {
         return new MeshMonitorTimings(
-                new HistogramWithDelta(logger, "receive", defaultHistogram()),
-                new HistogramWithDelta(logger, "send", defaultHistogram()),
-                new HistogramWithDelta(logger, "delta", defaultHistogram())
+                new HistogramWithDelta(logger, "ping", defaultHistogram()),
+                new HistogramWithDelta(logger, "jitter", defaultHistogram()),
+                new HistogramWithDelta(logger, "timestamp delta", defaultHistogram())
         );
     }
 
-    public HistogramWithDelta receiveHistogram() {
-        return receiveHistogram;
+    public HistogramWithDelta pingHistogram() {
+        return pingHistogram;
     }
 
-    public HistogramWithDelta sendHistogram() {
-        return sendHistogram;
+    public HistogramWithDelta jitterHistogram() {
+        return jitterHistogram;
     }
 
-    public HistogramWithDelta deltaHistogram() {
-        return deltaHistogram;
+    public HistogramWithDelta timestampDeltaHistogram() {
+        return timestampDeltaHistogram;
     }
 
     @Override
@@ -71,22 +72,21 @@ public final class MeshMonitorTimings {
         if (obj == null || obj.getClass() != this.getClass())
             return false;
         MeshMonitorTimings that = (MeshMonitorTimings) obj;
-        return Objects.equals(this.receiveHistogram, that.receiveHistogram) &&
-               Objects.equals(this.sendHistogram, that.sendHistogram) &&
-               Objects.equals(this.deltaHistogram, that.deltaHistogram);
+        return Objects.equals(this.pingHistogram, that.pingHistogram) &&
+               Objects.equals(this.jitterHistogram, that.jitterHistogram) &&
+               Objects.equals(this.timestampDeltaHistogram, that.timestampDeltaHistogram);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(receiveHistogram, sendHistogram, deltaHistogram);
+        return Objects.hash(pingHistogram, jitterHistogram, timestampDeltaHistogram);
     }
 
     @Override
     public String toString() {
         return "MeshMonitorTimings[" +
-               "receiveHistogram=" + receiveHistogram + ", " +
-               "sendHistogram=" + sendHistogram + ", " +
-               "deltaHistogram=" + deltaHistogram + ']';
+               "pingHistogram=" + pingHistogram + ", " +
+               "jitterHistogram=" + jitterHistogram + ", " +
+               "timestampDeltaHistogram=" + timestampDeltaHistogram + ']';
     }
-
 }

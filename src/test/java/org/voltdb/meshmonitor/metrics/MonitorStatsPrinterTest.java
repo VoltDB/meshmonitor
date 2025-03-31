@@ -26,9 +26,9 @@ class MonitorStatsPrinterTest {
     void shouldPrintOutputOfAllHistograms() {
         // Given
         MeshMonitorTimings timings = MeshMonitorTimings.createDefault(ConsoleLoggerTest.loggerForTest());
-        timings.sendHistogram().recordValueWithExpectedInterval(5, 5);
-        timings.deltaHistogram().recordValueWithExpectedInterval(15, 15);
-        timings.receiveHistogram().recordValueWithExpectedInterval(42, 42);
+        timings.jitterHistogram().recordValueWithExpectedInterval(5, 5);
+        timings.timestampDeltaHistogram().recordValueWithExpectedInterval(15, 15);
+        timings.pingHistogram().recordValueWithExpectedInterval(42, 42);
 
         MonitorStatsPrinter printer = new MonitorStatsPrinter("host");
 
