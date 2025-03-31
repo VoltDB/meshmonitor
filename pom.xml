@@ -21,11 +21,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
 
-        <maven.compiler.testSource>17</maven.compiler.testSource>
-        <maven.compiler.testTarget>17</maven.compiler.testTarget>
+        <maven.compiler.testSource>11</maven.compiler.testSource>
+        <maven.compiler.testTarget>11</maven.compiler.testTarget>
 
         <imageName>meshmonitor</imageName>
         <mainClass>org.voltdb.meshmonitor.cli.MeshMonitorCommand</mainClass>

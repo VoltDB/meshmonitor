@@ -121,14 +121,17 @@ public class MeshMonitorCommand implements Callable<Integer> {
 
         System.out.println(
                 CommandLine.Help.Ansi.AUTO.string(
-                        """
-                                @|green      __  ___          __                          _ __           \s
-                                    /  |/  /__  _____/ /_  ____ ___  ____  ____  (_) /_____  _____
-                                   / /|_/ / _ \\/ ___/ __ \\/ __ `__ \\/ __ \\/ __ \\/ / __/ __ \\/ ___/
-                                  / /  / /  __(__  ) / / / / / / / / /_/ / / / / / /_/ /_/ / /   \s
-                                 /_/  /_/\\___/____/_/ /_/_/ /_/ /_/\\____/_/ /_/_/\\__/\\____/_/ \s
-                                 |@                            %s
-                                """.formatted(new GitPropertiesVersionProvider().getSimpleVersion())));
+                        String.format(
+                                "@|green      __  ___          __                          _ __            \n" +
+                                "    /  |/  /__  _____/ /_  ____ ___  ____  ____  (_) /_____  _____\n" +
+                                "   / /|_/ / _ \\/ ___/ __ \\/ __ `__ \\/ __ \\/ __ \\/ / __/ __ \\/ ___/\n" +
+                                "  / /  / /  __(__  ) / / / / / / / / /_/ / / / / / /_/ /_/ / /    \n" +
+                                " /_/  /_/\\___/____/_/ /_/_/ /_/ /_/\\____/_/ /_/_/\\__/\\____/_/  \n" +
+                                " |@                            %s\n",
+                                new GitPropertiesVersionProvider().getSimpleVersion()
+                        )
+                )
+        );
 
         ConsoleLogger consoleLogger = new ConsoleLogger(spec.commandLine().getOut(), enableDebugLogging);
         ServerManager serverManager = new ServerManager(consoleLogger, Monitor::new, Duration.ofMillis(pingIntervalMilliseconds));

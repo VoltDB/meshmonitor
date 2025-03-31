@@ -10,6 +10,8 @@ package org.voltdb.meshmonitor.testutils;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 
+import static org.voltdb.meshmonitor.testutils.FileChannelUtils.byteBufferAbsolutePut;
+
 public class FakeWritableByteChannel implements WritableByteChannel {
 
     private final boolean isSlow;
@@ -30,7 +32,7 @@ public class FakeWritableByteChannel implements WritableByteChannel {
             toBeWritten = 1;
         }
 
-        dataWritten.put(dataWritten.position(), src, src.position(), toBeWritten);
+        byteBufferAbsolutePut(dataWritten, dataWritten.position(), src, src.position(), toBeWritten);
         dataWritten.position(dataWritten.position() + toBeWritten);
         src.position(src.position() + toBeWritten);
 

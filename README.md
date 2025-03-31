@@ -128,7 +128,7 @@ using [GraalVM Community Edition](https://github.com/graalvm/graalvm-ce-builds/r
 dependencies and can be run as is.
 
 A pure Java version in jar form (meshmonitor.jar) is also available. The Java version should work on 
-any platform with Java 17 or later installed (although it has only been tested on Linux).
+any platform with Java 8 or later installed (although it has only been tested on Linux).
 
 # Using Meshmonitor
 
@@ -230,11 +230,11 @@ Use the following command to run meshmonitor from the jar file:
 java -jar meshmonitor.jar <ARGS> 
 ```
 
-It requires at least Java 17 to run.
+Java 8 is enough run it but Java 11 is required to build and execute tests.
 
 ## Building
 
-Java SDK is required to build and test the Meshmonitor. Version 17 or above.
+Java SDK is required to build and test the Meshmonitor. Version 11 or above.
 Maven is used as a build system but does not need to be installed locally.
 
 The `mvnw` script (or `mvnw.cmd` on Windows) is used to bootstrap the build

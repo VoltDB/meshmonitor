@@ -53,11 +53,11 @@ public class HistogramLogger {
 
     private String getFormatWithColours(double value, double minHiccupSize) {
         if (value > 999.9) {
-            String formatted = "%4.1fs".formatted(value / 1000.0);
+            String formatted = String.format("%4.1fs", value / 1000.0);
             return CommandLine.Help.Ansi.AUTO.string("@|bold,red " + formatted + "|@");
         }
 
-        String formatted = "%5.1f".formatted(value);
+        String formatted = String.format("%5.1f", value);
         if (value > minHiccupSize) {
             return CommandLine.Help.Ansi.AUTO.string("@|bold,yellow " + formatted + "|@");
         }

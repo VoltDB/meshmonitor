@@ -59,15 +59,15 @@ public class GitPropertiesVersionProvider implements CommandLine.IVersionProvide
             String maybeCommitId = Objects.toString(properties.get(GIT_COMMIT_ID_PROPERTY), "");
 
             StringBuilder version = new StringBuilder();
-            if (!maybeTags.isBlank()) {
+            if (!maybeTags.trim().isEmpty()) {
                 version.append(maybeTags);
-            } else if (!maybeCommitId.isBlank()) {
+            } else if (!maybeCommitId.trim().isEmpty()) {
                 version.append(maybeCommitId);
             } else {
                 version.append(VERSION_UNKNOWN);
             }
 
-            if (!maybeBuildTime.isBlank()) {
+            if (!maybeBuildTime.trim().isEmpty()) {
                 version.append(" built on ").append(maybeBuildTime);
             }
 
