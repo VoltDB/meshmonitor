@@ -231,7 +231,7 @@ Use the following command to run meshmonitor from the jar file:
 java -jar meshmonitor.jar <ARGS> 
 ```
 
-Java 8 is enough run it but Java 11 is required to build and execute tests.
+Java 8 is enough to run it but Java 11 is required to build and execute tests.
 
 ## Building
 
