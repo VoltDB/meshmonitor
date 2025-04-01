@@ -24,21 +24,21 @@ public class MonitorStatsPrinter {
         MeshMonitorTimings timings = monitor.getTimings();
         InetSocketAddress remoteId = monitor.getRemoteId();
 
-        timings.receiveHistogram().getCumulativeHistogram(histogram ->
+        timings.pingHistogram().getCumulativeHistogram(histogram ->
                 histogramPrinter.printHistogram(output,
                         histogram,
                         remoteId,
                         "receive_seconds")
         );
 
-        timings.deltaHistogram().getCumulativeHistogram(histogram ->
+        timings.timestampDeltaHistogram().getCumulativeHistogram(histogram ->
                 histogramPrinter.printHistogram(output,
                         histogram,
                         remoteId,
                         "delta_seconds")
         );
 
-        timings.sendHistogram().getCumulativeHistogram(histogram -> {
+        timings.jitterHistogram().getCumulativeHistogram(histogram -> {
             histogramPrinter.printHistogram(output,
                     histogram,
                     remoteId,

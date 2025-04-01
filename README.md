@@ -94,20 +94,21 @@ pertains to. If a message has no such context then the IP column will be empty:
 There are 3 kinds of measurements:
 
 * ping (delta receive) - delta between receiving heartbeats
-* jitter (delta send) - delta between sending heartbeats
-* timestamp delta - delta between remotely recorded sent timestamp and locally recorded receive time
+* jitter (delta send) - the time that has passed between sending consecutive pings.
+* timestamp delta - delta between remotely recorded timestamp when ping
+  was generated and a locally recorded timestamp when it was received.
 
 Meshmonitor will print histograms of each of the three tracked values. All of these values need to be interpreted with
 the `--ping` interval in mind (default 5ms) that is included in the measurement values. The values that are printed are
 max, mean, and percentiles: 99th, 99.9th, and 99.99th:
 
 ```console
-[               ] --------receive-(ms)--------- ---------delta-(ms)---------- ---------send-(ms)-----------
-[               ]   Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99
-[   172.31.10.72]   5.2   5.1   5.1   5.2   5.2|  0.2   0.0   0.0   0.1   0.2|  5.1   5.1   5.1   5.1   5.1
-[    172.31.14.3]   5.3   5.1   5.1   5.1   5.3|  0.4   0.2   0.2   0.2   0.4|  5.8   5.1   5.1   5.5   5.8
-[   172.31.9.146]   5.1   5.1   5.1   5.1   5.1|  5.1   2.6   5.0   5.1   5.1|  5.1   5.1   5.1   5.1   5.1
-[   172.31.5.177]   5.1   5.1   5.1   5.1   5.1|  5.2   2.8   5.2   5.2   5.2|  5.1   5.1   5.1   5.1   5.1
+09:08:55 [               ] ----------ping-(ms)---------- ---------jitter-(ms)--------- ----timestamp-diff-(ms)------
+09:08:55 [               ]   Max  Mean    99  99.9 99.99|  Max  Mean    99  99.9 99.99 |  Max  Mean    99  99.9 99.99
+09:08:55 [   172.31.10.72]   5.2   5.1   5.1   5.2   5.2|  5.1   5.1   5.1   5.1   5.1 |  0.2   0.0   0.0   0.1   0.2
+09:08:55 [    172.31.14.3]   5.3   5.1   5.1   5.1   5.3|  5.8   5.1   5.1   5.5   5.8 |  0.4   0.2   0.2   0.2   0.4
+09:08:55 [   172.31.9.146]   5.1   5.1   5.1   5.1   5.1|  5.1   5.1   5.1   5.1   5.1 |  5.1   2.6   5.0   5.1   5.1
+09:08:55 [   172.31.5.177]   5.1   5.1   5.1   5.1   5.1|  5.1   5.1   5.1   5.1   5.1 |  5.2   2.8   5.2   5.2   5.2
 ```
 
 Measurements exceeding `--threshold` (default 20ms) will be printed in yellow. Those that exceed 1 second will be printed in

@@ -30,8 +30,8 @@ class MeshMonitorTimingsTest {
         timings.pingReceived(now, lastReceiveTime, timestampFromRemoteHost, pingInterval);
 
         // Then
-        long receiveSamples = timings.receiveHistogram().getCumulativeHistogram().getCountAtValue(now - lastReceiveTime);
-        long deltaSamples = timings.deltaHistogram().getCumulativeHistogram().getCountAtValue(now - timestampFromRemoteHost);
+        long receiveSamples = timings.pingHistogram().getCumulativeHistogram().getCountAtValue(now - lastReceiveTime);
+        long deltaSamples = timings.timestampDeltaHistogram().getCumulativeHistogram().getCountAtValue(now - timestampFromRemoteHost);
 
         assertThat(receiveSamples).isEqualTo(1);
         assertThat(deltaSamples).isEqualTo(1);
@@ -51,8 +51,8 @@ class MeshMonitorTimingsTest {
         timings.pingReceived(now, lastReceiveTime, timestampFromRemoteHost, pingInterval);
 
         // Then
-        long receiveSamples = timings.receiveHistogram().getCumulativeHistogram().getCountAtValue(now - lastReceiveTime);
-        long deltaSamples = timings.deltaHistogram().getCumulativeHistogram().getCountAtValue(Math.abs(now - timestampFromRemoteHost));
+        long receiveSamples = timings.pingHistogram().getCumulativeHistogram().getCountAtValue(now - lastReceiveTime);
+        long deltaSamples = timings.timestampDeltaHistogram().getCumulativeHistogram().getCountAtValue(Math.abs(now - timestampFromRemoteHost));
 
         assertThat(receiveSamples).isEqualTo(1);
         assertThat(deltaSamples).isEqualTo(1);
@@ -69,7 +69,7 @@ class MeshMonitorTimingsTest {
         timings.trackWakeupJitter(expected, expected);
 
         // Then
-        long actual = timings.sendHistogram().getCumulativeHistogram().getCountAtValue(expected);
+        long actual = timings.jitterHistogram().getCumulativeHistogram().getCountAtValue(expected);
         assertThat(actual).isEqualTo(1);
     }
 }
