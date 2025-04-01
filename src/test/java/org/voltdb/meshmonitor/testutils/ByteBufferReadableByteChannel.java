@@ -10,6 +10,8 @@ package org.voltdb.meshmonitor.testutils;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 
+import static org.voltdb.meshmonitor.testutils.FileChannelUtils.byteBufferAbsolutePut;
+
 public class ByteBufferReadableByteChannel implements ReadableByteChannel {
 
     private final ByteBuffer data;
@@ -21,7 +23,8 @@ public class ByteBufferReadableByteChannel implements ReadableByteChannel {
     @Override
     public int read(ByteBuffer dst) {
         int remaining = dst.remaining();
-        dst.put(dst.position(), data, data.position(), remaining);
+
+        byteBufferAbsolutePut(dst, dst.position(), data, data.position(), remaining);
 
         dst.position(dst.position() + remaining);
         data.position(data.position() + remaining);

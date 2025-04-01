@@ -69,14 +69,14 @@ public class ConsoleLogger {
         String colourfulDateTime = CommandLine.Help.Ansi.AUTO.string(String.format("@|%s %s|@", logLevel, dateTime));
         String colourfulHostAddress = CommandLine.Help.Ansi.AUTO.string(String.format("@|%s [%15s]|@", logLevel, hostAddress));
 
-        out.println(colourfulDateTime + " " + colourfulHostAddress + " " + message.formatted(args));
+        out.println(colourfulDateTime + " " + colourfulHostAddress + " " + String.format(message, args));
     }
 
     public void debug(InetSocketAddress socketAddress, String format, Object... args) {
         String hostAddress = socketAddress.getAddress().getHostAddress();
 
         if (enableDebugLogging) {
-            log(hostAddress, LogLevel.INFO, format.formatted(args));
+            log(hostAddress, LogLevel.INFO, String.format(format, args));
         }
     }
 

@@ -22,48 +22,36 @@ public class GitPropertiesVersionProviderTest {
     static Stream<Arguments> variousPropertiesContents() {
         return Stream.of(
                 Arguments.of(
-                        """
-                                git.tags=v1.0
-                                git.build.time=2024-01-01
-                                git.commit.id.abbrev=abc123
-                                """,
+                        "git.tags=v1.0\n" +
+                        "git.build.time=2024-01-01\n" +
+                        "git.commit.id.abbrev=abc123\n",
                         "version v1.0 built on 2024-01-01"
                 ),
                 Arguments.of(
-                        """
-                                git.tags=
-                                git.build.time=2024-01-01
-                                git.commit.id.abbrev=abc123
-                                """,
+                        "git.tags=\n" +
+                        "git.build.time=2024-01-01\n" +
+                        "git.commit.id.abbrev=abc123\n",
                         "version abc123 built on 2024-01-01"
                 ),
                 Arguments.of(
-                        """
-                                git.tags=
-                                git.build.time=2024-01-01
-                                git.commit.id.abbrev=
-                                """,
+                        "git.tags=\n" +
+                        "git.build.time=2024-01-01\n" +
+                        "git.commit.id.abbrev=\n",
                         "version unknown built on 2024-01-01"
                 ),
                 Arguments.of(
-                        """
-                                git.tags=
-                                git.build.time=
-                                git.commit.id.abbrev=
-                                """,
+                        "git.tags=\n" +
+                        "git.build.time=\n" +
+                        "git.commit.id.abbrev=\n",
                         "version unknown"
                 ),
                 Arguments.of(
-                        """
-                                git.build.time=2024-01-01
-                                git.commit.id.abbrev=abc123
-                                """,
+                        "git.build.time=2024-01-01\n" +
+                        "git.commit.id.abbrev=abc123\n",
                         "version abc123 built on 2024-01-01"
                 ),
                 Arguments.of(
-                        """
-                                git.build.time=2024-01-01
-                                """,
+                        "git.build.time=2024-01-01\n",
                         "version unknown built on 2024-01-01"
                 ),
                 Arguments.of(

@@ -12,6 +12,7 @@ import java.nio.channels.SocketChannel;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ServerManager {
 
@@ -30,14 +31,14 @@ public class ServerManager {
     public synchronized List<Monitor> getMonitors() {
         return monitors.stream()
                 .filter(Monitor::isRunning)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public synchronized List<InetSocketAddress> getConnections() {
         return monitors.stream()
                 .filter(Monitor::isRunning)
                 .map(Monitor::getRemoteId)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public synchronized boolean createNewMonitorIfNotAlreadyPresent(SocketChannel channel, MeshMonitor meshMonitor, InetSocketAddress remoteId) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Volt Active Data Inc.
+ * Copyright (C) 2024-2025 Volt Active Data Inc.
  *
  * Use of this source code is governed by an MIT
  * license that can be found in the LICENSE file or at
@@ -35,13 +35,12 @@ public class ContainerTestBase {
 
     private static final ImageFromDockerfile IMAGE_WITH_JAR = new ImageFromDockerfile()
             .withFileFromFile("/home/meshmonitor", new File(".").getAbsoluteFile().getParentFile())
-            .withFileFromString("/home/meshmonitor/meshmonitor", """
-                    #!/bin/bash
-
-                    java --enable-preview \\
-                         -cp "/home/meshmonitor/target/meshmonitor-1.0.0-jar-with-dependencies.jar" \\
-                         org.voltdb.meshmonitor.cli.MeshMonitorCommand -i 1 "$@"
-                    """)
+            .withFileFromString("/home/meshmonitor/meshmonitor",
+                    "#!/bin/bash\n" +
+                    "java \\\n" +
+                    "     -cp \"/home/meshmonitor/target/meshmonitor-1.0.0-jar-with-dependencies.jar\" \\\n" +
+                    "     org.voltdb.meshmonitor.cli.MeshMonitorCommand -i 1 \"$@\"\n"
+            )
             .withDockerfileFromBuilder(builder ->
                     builder
                             .from("ghcr.io/graalvm/graalvm-community:21.0.1-ol9-20231024")
