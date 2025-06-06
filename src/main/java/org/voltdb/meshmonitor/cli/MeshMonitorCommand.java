@@ -83,8 +83,8 @@ public class MeshMonitorCommand implements Callable<Integer> {
 
     @CommandLine.Option(
             names = {"-m", "--metrics-bind"},
-            description = "Bind address of a metrics server port in format ipv4[:port]",
-            defaultValue = "127.0.0.1:12223",
+            description = "Bind address for metrics server: [host][:port], e.g. 0.0.0.0:12223 for all IPv4 interfaces, [::]:12223 for all IPv6 interfaces, 12223 (default) for all interfaces (IPv4 and IPv6)",
+            defaultValue = "12223",
             converter = InetSocketAddressConverter.class)
     private InetSocketAddress metricsBindAddress;
 

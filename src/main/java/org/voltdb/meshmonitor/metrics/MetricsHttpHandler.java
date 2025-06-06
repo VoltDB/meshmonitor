@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Volt Active Data Inc.
+ * Copyright (C) 2024-2025 Volt Active Data Inc.
  *
  * Use of this source code is governed by an MIT
  * license that can be found in the LICENSE file or at
@@ -53,8 +53,12 @@ class MetricsHttpHandler implements HttpHandler {
         try (OutputStream outputStream = httpExchange.getResponseBody()) {
             StringBuilder output = new StringBuilder();
             serverManager.getMonitors().forEach(monitor -> monitorStatsPrinter.print(output, monitor));
-
             String prometheusResponse = output.toString();
+
+            // Set Content-Type header (required by Prometheus)
+            // see: https://prometheus.io/docs/instrumenting/exposition_formats/#text-format-details
+            httpExchange.getResponseHeaders().set("Content-Type", "text/plain; version=0.0.4; charset=utf-8");
+
             httpExchange.sendResponseHeaders(200, prometheusResponse.length());
 
             outputStream.write(prometheusResponse.getBytes());
