@@ -49,6 +49,4 @@ public class MetricsInetSocketAddressConverter implements CommandLine.ITypeConve
         // value is hostname only
         return new InetSocketAddress(value, DEFAULT_PORT);
     }
-
-
 }
