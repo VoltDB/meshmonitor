@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Volt Active Data Inc.
+ * Copyright (C) 2024-2025 Volt Active Data Inc.
  *
  * Use of this source code is governed by an MIT
  * license that can be found in the LICENSE file or at
@@ -18,13 +18,27 @@ public class InetSocketAddressConverter implements CommandLine.ITypeConverter<In
     @Override
     public InetSocketAddress convert(String value) {
         int port = DEFAULT_PORT;
+        String host;
 
         int pos = value.lastIndexOf(':');
         if (pos >= 0) {
+            // Host and port provided
+            host = value.substring(0, pos);
             port = Integer.parseInt(value.substring(pos + 1));
-            return new InetSocketAddress(value.substring(0, pos), port);
+        } else {
+            // Only hostname provided, use default port
+            host = value.trim();
         }
 
-        return new InetSocketAddress(value, port);
+        if (host.isEmpty()) {
+            throw new IllegalArgumentException("Hostname is required. Please provide a valid FQDN or IP address.");
+        }
+
+        // Remove IPv6 brackets if present
+        if (host.startsWith("[") && host.endsWith("]")) {
+            host = host.substring(1, host.length() - 1);
+        }
+
+        return new InetSocketAddress(host, port);
     }
 }

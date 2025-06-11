@@ -15,9 +15,9 @@ import java.net.UnknownHostException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class InetSocketAddressConverterTest {
+public class MetricsInetSocketAddressConverterTest {
 
-    private final InetSocketAddressConverter converter = new InetSocketAddressConverter();
+    private final MetricsInetSocketAddressConverter converter = new MetricsInetSocketAddressConverter();
 
     @Test
     public void shouldConvertWithPort() {
@@ -44,7 +44,7 @@ public class InetSocketAddressConverterTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getHostName()).isEqualTo("localhost");
-        assertThat(result.getPort()).isEqualTo(InetSocketAddressConverter.DEFAULT_PORT);
+        assertThat(result.getPort()).isEqualTo(MetricsInetSocketAddressConverter.DEFAULT_PORT);
     }
 
     @Test
@@ -58,13 +58,16 @@ public class InetSocketAddressConverterTest {
     }
 
     @Test
-    public void shouldThrowExceptionOnEmptyString() {
+    public void emptyStringShouldDefaultToWildcard() {
         // Given
         String input = "";
 
-        // When & Then
-        assertThatThrownBy(() -> converter.convert(input))
-                .isInstanceOf(IllegalArgumentException.class);
+        // When
+        InetSocketAddress result = converter.convert(input);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("0.0.0.0");
+        assertThat(result.getPort()).isEqualTo(MetricsInetSocketAddressConverter.DEFAULT_PORT);
     }
 
     @Test
@@ -78,12 +81,16 @@ public class InetSocketAddressConverterTest {
     }
 
     @Test
-    public void shouldThrowExceptionIfOnlyColonAndPortIsSpecified() throws UnknownHostException {
+    public void shouldDefaultToWildcardIfONlyColonAndPortIsSpecified() throws UnknownHostException {
         // Given
         String input = ":8080";
 
-        // When & Then
-        assertThatThrownBy(() -> converter.convert(input))
-                .isInstanceOf(IllegalArgumentException.class);
+        // When
+        InetSocketAddress result = converter.convert(input);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("0.0.0.0");
+        assertThat(result.getPort()).isEqualTo(8080);
     }
 }
