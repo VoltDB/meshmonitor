@@ -49,7 +49,11 @@ public abstract class BaseInetSocketAddressConverter implements CommandLine.ITyp
 
             validateHost(host);
             validatePort(port);
-            return new InetSocketAddress(host, port);
+            if (host.isEmpty() && treatPlainValueAsPort()) {
+                return new InetSocketAddress(port);
+            } else {
+                return new InetSocketAddress(host, port);
+            }
 
         } else {
 
@@ -74,7 +78,7 @@ public abstract class BaseInetSocketAddressConverter implements CommandLine.ITyp
             }
 
             if (lastColon == 0) {
-                // no hostname given, but the colon indicates value is a port
+                // no hostname given, but the colon indicates value should be the port
                 if (requiresHostname()) {
                     throw new IllegalArgumentException("Hostname is required. Please provide a valid FQDN or IP address.");
                 } else {
@@ -87,7 +91,10 @@ public abstract class BaseInetSocketAddressConverter implements CommandLine.ITyp
 
             // there is one and only one colon
             host = value.substring(0, lastColon);
-            port = Integer.parseInt(value.substring(lastColon + 1));
+            String portString = value.substring(lastColon + 1);
+            if (!portString.isEmpty()) {
+                port = Integer.parseInt(portString);
+            }
             validateHost(host);
             validatePort(port);
             return new InetSocketAddress(host, port);

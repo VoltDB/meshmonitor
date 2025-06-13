@@ -19,27 +19,64 @@ public class InetSocketAddressConvertersTest {
 
     // This test covers both custom converter classes:
     private final BindInetSocketAddressConverter bconverter = new BindInetSocketAddressConverter();
+    // Metrics Converter:
+    //    - can be port only (wildcard host)
+    //    - default port is 12223
+
     private final MetricsInetSocketAddressConverter mconverter = new MetricsInetSocketAddressConverter();
+    // Bind Converter:
+    //    - must have a hostname (it is advertised)
+    //    - defaults to port 12222
+
     private final BaseInetSocketAddressConverter[] converters = {bconverter, mconverter};
 
-    // The main differences:
-    //    - Metrics can be port only (wildcard host)
-    //    - Bind must have a hostname (it is advertised)
-
+    private void testIllegalArgument(BaseInetSocketAddressConverter converter, String input) {
+        assertThatThrownBy(() -> converter.convert(input))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
 
     // --------- TESTS THAT ARE IDENTICAL FOR BOTH CONVERTERS ----------
     @Test
-    public void shouldThrowExceptionNoClosingBracket() {
+    public void ipv6MissingOneBracket() {
         String input = "[1:2:3:4";
 
         for (BaseInetSocketAddressConverter c : converters) {
-            assertThatThrownBy(() -> c.convert(input))
-                .isInstanceOf(IllegalArgumentException.class);
+            testIllegalArgument(c, input);
+        }
+
+        input = "1:2:3:4]";
+
+        for (BaseInetSocketAddressConverter c : converters) {
+            testIllegalArgument(c, input);
         }
     }
 
     @Test
-    public void shouldConvertWithPort() {
+    public void ipv6NoBrackets() {
+        String input = "1:2:3:4";
+
+        for (BaseInetSocketAddressConverter c : converters) {
+            testIllegalArgument(c, input);
+        }
+
+        input = "1:2:3:4:1000"; // no brackets with port
+
+        for (BaseInetSocketAddressConverter c : converters) {
+            testIllegalArgument(c, input);
+        }
+    }
+
+    @Test
+    public void ipv6NoColon() {
+        String input = "[1:2:3:4]8080";
+
+        for (BaseInetSocketAddressConverter c : converters) {
+            testIllegalArgument(c, input);
+        }
+    }
+
+    @Test
+    public void hostnameWithPort() {
 
         String input = "localhost:8080";
 
@@ -50,10 +87,30 @@ public class InetSocketAddressConvertersTest {
             assertThat(result.getHostName()).isEqualTo("localhost");
             assertThat(result.getPort()).isEqualTo(8080);
         }
+
+        input = "10.0.0.1:8080";
+
+        for (BaseInetSocketAddressConverter c : converters) {
+            InetSocketAddress result = c.convert(input);
+
+            assertThat(result).isNotNull();
+            assertThat(result.getHostName()).isEqualTo("10.0.0.1");
+            assertThat(result.getPort()).isEqualTo(8080);
+        }
+
+        input = "[1:2:3:4]:8080";
+
+        for (BaseInetSocketAddressConverter c : converters) {
+            InetSocketAddress result = c.convert(input);
+
+            assertThat(result).isNotNull();
+            assertThat(result.getHostName()).isEqualTo("1:2:3:4");
+            assertThat(result.getPort()).isEqualTo(8080);
+        }
     }
 
     @Test
-    public void shouldConvertWithoutPort() {
+    public void hostnameOnly() {
 
         String input = "localhost";
 
@@ -68,10 +125,84 @@ public class InetSocketAddressConvertersTest {
         assertThat(result).isNotNull();
         assertThat(result.getHostName()).isEqualTo("localhost");
         assertThat(result.getPort()).isEqualTo(mconverter.getDefaultPort());
+
+        input = "10.0.0.1";
+
+        // Bind accepts IPv4 host, adds default port
+        result = bconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo(input);
+        assertThat(result.getPort()).isEqualTo(bconverter.getDefaultPort());
+
+        // Metrics accepts IPv4 host, adds different default port
+        result = mconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo(input);
+        assertThat(result.getPort()).isEqualTo(mconverter.getDefaultPort());
+
+        input = "[1:2:3:4]";
+
+        // Bind accepts IPv4 host, adds default port
+        result = bconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("1:2:3:4");
+        assertThat(result.getPort()).isEqualTo(bconverter.getDefaultPort());
+
+        // Metrics accepts IPv4 host, adds different default port
+        result = mconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("1:2:3:4");
+        assertThat(result.getPort()).isEqualTo(mconverter.getDefaultPort());
     }
 
     @Test
-    public void shouldThrowExceptionWithInvalidPort() {
+    public void hostnameColonNoPort() { // should ignore the extra colon
+
+        String input = "localhost:";
+
+        // Bind accepts localhost, adds default port
+        InetSocketAddress result = bconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("localhost");
+        assertThat(result.getPort()).isEqualTo(bconverter.getDefaultPort());
+
+        // Metrics accepts localhost, adds different default port
+        result = mconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("localhost");
+        assertThat(result.getPort()).isEqualTo(mconverter.getDefaultPort());
+
+        input = "10.0.0.1:";
+
+        // Bind accepts IPv4 host, adds default port
+        result = bconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("10.0.0.1");
+        assertThat(result.getPort()).isEqualTo(bconverter.getDefaultPort());
+
+        // Metrics accepts IPv4 host, adds different default port
+        result = mconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("10.0.0.1");
+        assertThat(result.getPort()).isEqualTo(mconverter.getDefaultPort());
+
+        input = "[1:2:3:4]:";
+
+        // Bind accepts IPv4 host, adds default port
+        result = bconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("1:2:3:4");
+        assertThat(result.getPort()).isEqualTo(bconverter.getDefaultPort());
+
+        // Metrics accepts IPv4 host, adds different default port
+        result = mconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("1:2:3:4");
+        assertThat(result.getPort()).isEqualTo(mconverter.getDefaultPort());
+    }
+
+    @Test
+    public void invalidPort() {
 
         String input = "localhost:abc";
 
@@ -81,24 +212,15 @@ public class InetSocketAddressConvertersTest {
         }
     }
 
-    // IPv6 with brackets
-    //    empty brackets - host name empty
-    //    nothing after ] - use default port
-    //    ]: no port - use default port
-    //    ]:port - use port
-    // [1:2:3:4]12223 - missing colon should fail
-
-
     // --------- TESTS THAT ARE DIFFERENT FOR EACH CONVERTER ----------
 
     @Test
-    public void onlyColonAndPortSpecified() throws UnknownHostException {
+    public void colonPort() throws UnknownHostException {
 
         String input = ":8080";
 
         // Bind converter requires hostname
-        assertThatThrownBy(() -> bconverter.convert(input))
-                .isInstanceOf(IllegalArgumentException.class);
+        testIllegalArgument(bconverter, input);
 
         // Metrics converter accepts port only (uses wildcard)
         InetSocketAddress result = mconverter.convert(input);
@@ -108,7 +230,22 @@ public class InetSocketAddressConvertersTest {
     }
 
     @Test
-    public void handleOnlyColon() {
+    public void emptyBracketsColonPort() throws UnknownHostException {
+
+        String input = "[]:8080";
+
+        // Bind converter requires hostname
+        testIllegalArgument(bconverter, input);
+
+        // Metrics converter accepts port only (uses wildcard)
+        InetSocketAddress result = mconverter.convert(input);
+        assertThat(result).isNotNull();
+        assertThat(result.getHostName()).isEqualTo("0.0.0.0");
+        assertThat(result.getPort()).isEqualTo(8080);
+    }
+
+    @Test
+    public void colonOnly() {
 
         String input = ":";
 
@@ -119,12 +256,11 @@ public class InetSocketAddressConvertersTest {
         assertThat(result.getPort()).isEqualTo(mconverter.getDefaultPort());
 
         // Bind should throw exception - hostname is required
-        assertThatThrownBy(() -> bconverter.convert(input))
-                .isInstanceOf(IllegalArgumentException.class);
+        testIllegalArgument(bconverter, input);
     }
-    
+
     @Test
-    public void handleEmptyString() {
+    public void emptyString() {
 
         String input = "";
 
@@ -135,18 +271,6 @@ public class InetSocketAddressConvertersTest {
         assertThat(result.getPort()).isEqualTo(mconverter.getDefaultPort());
 
         // Bind should throw exception - hostname is required
-        assertThatThrownBy(() -> bconverter.convert(input))
-                .isInstanceOf(IllegalArgumentException.class);
+        testIllegalArgument(bconverter, input);
     }
-
-    //@Test
-    public void shouldConvertIPv6() {
-
-        String input = "[1:2:3:4]"; // no port
-        input = "[1:2:3:4]:"; // colon but no port
-        input = "[1:2:3:4]:1000"; // with port
-        input = "1:2:3:4:1000"; // no brackets with port
-        input = "1:2:3:4"; // no brackets no port
-    }
-
 }
