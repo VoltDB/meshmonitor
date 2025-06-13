@@ -7,20 +7,20 @@
  */
 package org.voltdb.meshmonitor.cli;
 
-public class MetricsInetSocketAddressConverter extends BaseInetSocketAddressConverter {
+public class BindInetSocketAddressConverter extends BaseInetSocketAddressConverter {
 
     @Override
     protected int getDefaultPort() {
-        return 12223;
+        return 12222;
     }
 
     @Override
     protected boolean requiresHostname() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean treatPlainValueAsPort() {
-        return true;
+        return false;
     }
 }
