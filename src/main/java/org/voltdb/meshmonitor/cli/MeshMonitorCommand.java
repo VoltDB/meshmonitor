@@ -71,9 +71,10 @@ public class MeshMonitorCommand implements Callable<Integer> {
 
     @CommandLine.Option(
             names = {"-b", "--bind"},
-            description = "Bind address in format ipv4[:port]",
+            required = true,
+            description = "Bind address in format host[:port]",
             defaultValue = "127.0.0.1:12222",
-            converter = InetSocketAddressConverter.class)
+            converter = BindInetSocketAddressConverter.class)
     private InetSocketAddress bindAddress;
 
     @CommandLine.Option(
@@ -85,7 +86,7 @@ public class MeshMonitorCommand implements Callable<Integer> {
             names = {"-m", "--metrics-bind"},
             description = "Bind address for metrics server in format [host][:port]. Default is 12223 for all interfaces",
             defaultValue = "12223",
-            converter = InetSocketAddressConverter.class)
+            converter = MetricsInetSocketAddressConverter.class)
     private InetSocketAddress metricsBindAddress;
 
     @CommandLine.Option(
@@ -103,7 +104,7 @@ public class MeshMonitorCommand implements Callable<Integer> {
     @CommandLine.Parameters(
             arity = "0..*",
             description = "Whitespace separated list of servers to maintain permanent connection to, e.g. 192.168.0.1 192.168.0.2 1926.168.0.12",
-            converter = InetSocketAddressConverter.class)
+            converter = BindInetSocketAddressConverter.class)
     private List<InetSocketAddress> servers = new ArrayList<>();
 
     @CommandLine.Spec
