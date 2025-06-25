@@ -18,11 +18,11 @@
 
 # Overview
 
-Meshmonitor is a tool for monitoring network issues such as network delays and instability, mysterious timeouts, hangs,
-and scheduling problems that delay message passing.
+Meshmonitor is a tool for detecting enivornmental issues that may impact Volt performance and stability such as network delays
+and instability, scheduling issues and other resource contention. 
 
-While it can be used as a general network monitoring tool it simulates the Volt heartbeat paths and is intended to
-diagnose situations when sites are experiencing dead host timeouts without any obvious network event.
+While it can be used as a general monitoring tool it simulates the Volt heartbeat paths and is intended to
+diagnose situations when clusters are experiencing processing delays and dead host timeouts without any obvious network event.
 
 Meshmonitor can be run alongside Volt. It has very low overhead on the CPUs and network. It can also be helpful to run
 without Volt - as a proof point that your environment is going to have adequate baseline stability for running Volt.
@@ -33,8 +33,8 @@ First - an analogy. Think of Volt as a fast car. Like all cars, the quality of t
 which you can travel. If the streets you drive on are poorly paved, have random lane closings, or a lot of traffic
 lights then your fast car goes no faster than any old jalopy.
 
-Environmental blips in scheduling, networking, CPU accesses are like potholes to Volt. If a Volt site thread can't
-run for 50ms - then your application can experience long-tail latency problems. If the heart beating between cluster
+Environmental blips in scheduling, networking and CPU accesses are like potholes to Volt. If a Volt site thread can't
+run for 50ms - then your application can experience latency problems. If the heart beating between cluster
 nodes is delayed for long enough, then some nodes may get ejected from the cluster.
 
 The following is an ever-growing list of things that the Volt support team has seen when looking at customers' Mesh
@@ -43,22 +43,24 @@ Monitor data:
 1. Batch network copies/backups that are doing a high IO load that linux decides is more important than scheduling
    Volt (a solution is to throttle these jobs)
 2. Other processes on the system taking too much CPU
-3. VMs/Containers that are starved by neighbors
-4. VMs/Containers with incorrect/inadequate thread pinning
-5. VM/Containers that are migrating
-6. Power save modes that slow down "idle" processors
-7. Boot/grub kernel setting of idle=poll
-8. Network congestion between particular nodes/pods
+3. Network congestion between particular nodes/pods
+4. VMs/Containers/pods that are starved for resources by "noisy neighbors" on the same system
+5. VMs/Container/pods with incorrect/inadequate CPU allocations
+6. VM/Containers that are migrating
+7. Power save modes that slow down "idle" processors
+8. Boot/grub kernel setting of idle=poll
+9. Swapping (Note: Volt recommends disabling swap)
 
-Causes of latency/timeouts that are not visible using meshmonitor (but may be visible in volt.log):
 
-1. GC stalls
+There are several causes of latency/timeouts that are not visible using meshmonitor, but may be visible in volt.log:
+
+1. GC stalls 
 2. Volt memory compaction delays (for versions prior to V12.0)
 
 # What Meshmonitor does
 
-Each meshmonitor process has 2 threads: *send* and *receive* for every node it is connected to. These threads measure
-and report 3 metrics:
+Meshmonitor simulates the Volt heartbeat mechanism. Each meshmonitor process has 2 threads: *send* and *receive* for every node
+it is connected to. These threads measure and report 3 metrics:
 
 1. **Receiving heartbeats.** A *receive* thread that is blocked reading the socket that receives messages sent from the
    other servers. This is the main metric to look at. It should be close to the heartbeat interval (set using `-p`
@@ -94,9 +96,9 @@ pertains to. If a message has no such context then the IP column will be empty:
 There are 3 kinds of measurements:
 
 * ping (delta receive) - delta between receiving heartbeats
-* jitter (delta send) - the time that has passed between sending consecutive pings.
+* jitter (delta send) - the time that has passed between sending consecutive pings
 * timestamp delta - delta between remotely recorded timestamp when ping
-  was generated and a locally recorded timestamp when it was received.
+  was generated and a locally recorded timestamp when it was received
 
 Meshmonitor will print histograms of each of the three tracked values. All of these values need to be interpreted with
 the `--ping` interval in mind (default 5ms) that is included in the measurement values. The values that are printed are
